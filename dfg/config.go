@@ -1,4 +1,4 @@
-package main
+package dfg
 
 import (
 	"encoding/json"
@@ -11,7 +11,7 @@ type DockerConfig struct {
 }
 
 // LoadDockerConfig reads data from a docker json config file
-func LoadDockerConfig(path string) (parsedConfig DfgConfig, configErr error) {
+func LoadDockerConfig(path string) (parsedConfig DockerConfig, configErr error) {
 	configFile, configErr := os.Open(path)
 
 	if configErr != nil {
