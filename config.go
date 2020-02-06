@@ -10,7 +10,6 @@ import (
 // Configuration contains all docker config fields
 type Configuration struct {
 	ImageURL string `json:"image"`
-	Wat      string `json:"wat"`
 }
 
 // configFileName holds the name of the config file
