@@ -5,9 +5,10 @@ import (
 )
 
 var rootCmd = &cobra.Command{
-	Use:   "dfg",
-	Short: "dfg is a Docker configuration tool",
-	Long:  "Easily configure Docker environments with dfg!",
+	Use:     "dcfg",
+	Short:   "docker-config is a Docker configuration tool",
+	Long:    "Easily configure Docker environments with the dcfg CLI tool!",
+	Version: version,
 	Run: func(cmd *cobra.Command, args []string) {
 		err := InitConfig()
 		PrintErrFatal(err)

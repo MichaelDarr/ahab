@@ -8,7 +8,7 @@ import (
 // PrintErr prints an error to the console (if non-nil)
 func PrintErr(err error) {
 	if errStr := err.Error(); errStr != "" {
-		StylePrint(errStr, "red")
+		StylePrint("red", errStr)
 	}
 }
 

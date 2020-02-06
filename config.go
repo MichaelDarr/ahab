@@ -9,13 +9,18 @@ import (
 
 // Configuration contains all docker config fields
 type Configuration struct {
-	ImageURL string `json:"image"`
+	DcfgVersion string `json:"version"`
+	ImageURL    string `json:"image"`
 }
 
-// configFileName holds the name of the config file
-const configFileName string = "dfg.json"
-
+// config holds the configuration loaded by InitConfig
 var config *Configuration
+
+// configFileName holds the name of the config file
+const configFileName string = "dcfg.json"
+
+// version holds the build-time dcfg version (set from build command)
+var version string
 
 // InitConfig finds and parses the docker config file relative to the working directory
 func InitConfig() error {
@@ -73,6 +78,9 @@ func findConfigPath(topDir string) (configPath string, err error) {
 func missingConfigVars() (missingVars string) {
 	if config.ImageURL == "" {
 		missingVars = appendToStrList(missingVars, "image")
+	}
+	if config.DcfgVersion == "" {
+		missingVars = appendToStrList(missingVars, "version")
 	}
 
 	return
