@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 // Configuration contains all docker config fields
@@ -22,10 +23,22 @@ const configFileName string = "dcfg.json"
 // version holds the build-time dcfg version (set from build command)
 var version string
 
+// ContainerName returns a filepath-based container name for the active config
+func ContainerName() (name string, err error) {
+	configPath, err := findConfigPathCwd()
+	if err != nil {
+		return
+	}
+
+	name = filepath.Dir(configPath)
+	name = strings.TrimPrefix(name, "/")
+	name = strings.ReplaceAll(name, "/", "_")
+	return
+}
+
 // InitConfig finds and parses the docker config file relative to the working directory
 func InitConfig() error {
-	curDir, _ := os.Getwd()
-	configPath, err := findConfigPath(curDir)
+	configPath, err := findConfigPathCwd()
 	if err != nil {
 		return err
 	}
@@ -81,6 +94,12 @@ func findConfigPath(topDir string) (configPath string, err error) {
 		configPath = configTestPath
 	}
 
+	return
+}
+
+func findConfigPathCwd() (configPath string, err error) {
+	curDir, _ := os.Getwd()
+	configPath, err = findConfigPath(curDir)
 	return
 }
 

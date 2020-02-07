@@ -12,6 +12,10 @@ var rootCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		err := InitConfig()
 		PrintErrFatal(err)
+
+		containerName, err := ContainerName()
+		PrintErrFatal(err)
+		println(containerName)
 	},
 }
 
