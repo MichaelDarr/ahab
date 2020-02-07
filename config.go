@@ -14,53 +14,46 @@ type Configuration struct {
 	ImageURL    string `json:"image"`
 }
 
-// config holds the configuration loaded by InitConfig
-var config *Configuration
-
 // configFileName holds the name of the config file
 const configFileName string = "dcfg.json"
 
-// version holds the build-time dcfg version (set from build command)
-var version string
-
-// ContainerName returns a filepath-based container name for the active config
-func ContainerName() (name string, err error) {
-	configPath, err := findConfigPathCwd()
-	if err != nil {
-		return
-	}
-
+// ContainerName returns a filepath-based container name for a given config file
+func ContainerName(configPath string) (name string, err error) {
 	name = filepath.Dir(configPath)
-	name = strings.TrimPrefix(name, "/")
+	name = strings.TrimPrefix(name, "/") // we don't want every name to begin with _
 	name = strings.ReplaceAll(name, "/", "_")
 	return
 }
 
-// InitConfig finds and parses the docker config file relative to the working directory
-func InitConfig() error {
-	configPath, err := findConfigPathCwd()
+// Config finds and parses the docker config file relative to the working directory
+func Config() (config *Configuration, configPath string, err error) {
+	curDir, _ := os.Getwd()
+	configPath, err = findConfigPath(curDir)
 	if err != nil {
-		return err
+		return
 	}
 
 	configFile, err := os.Open(configPath)
 	if err != nil {
-		return fmt.Errorf("Failed to open config file '%s': %s", configPath, err)
+		err = fmt.Errorf("Failed to open config file '%s': %s", configPath, err)
+		return
 	}
 	defer configFile.Close()
 
 	decoder := json.NewDecoder(configFile)
 	if err = decoder.Decode(&config); err != nil {
-		return fmt.Errorf("Failed to parse config file '%s': %s", configPath, err)
+		err = fmt.Errorf("Failed to parse config file '%s': %s", configPath, err)
+		return
 	}
 
-	missingVars := missingConfigVars()
+	missingVars := missingConfigVars(config)
 	if missingVars != "" {
-		return fmt.Errorf("Config file '%s' missing required fields: %s", configPath, missingVars)
+		err = fmt.Errorf("Config file '%s' missing required fields: %s", configPath, missingVars)
+		return
 	}
 
 	err = checkConfigVersion(config.DcfgVersion)
-	return err
+	return
 }
 
 // appendToStrList is a helper for creating human-readable comma-separated lists
@@ -97,14 +90,8 @@ func findConfigPath(topDir string) (configPath string, err error) {
 	return
 }
 
-func findConfigPathCwd() (configPath string, err error) {
-	curDir, _ := os.Getwd()
-	configPath, err = findConfigPath(curDir)
-	return
-}
-
 // missingConfigVars returns a comma-separated string of missing required config fields
-func missingConfigVars() (missingVars string) {
+func missingConfigVars(config *Configuration) (missingVars string) {
 	if config.ImageURL == "" {
 		missingVars = appendToStrList(missingVars, "image")
 	}
