@@ -7,10 +7,9 @@ import (
 )
 
 var execCmd = &cobra.Command{
-	Use:                "exec",
-	Short:              "Execute a command in the container",
-	Args:               cobra.ArbitraryArgs,
-	DisableFlagParsing: true,
+	Use:   "exec",
+	Short: "Execute a detatched command",
+	Args:  cobra.ArbitraryArgs,
 	Run: func(cmd *cobra.Command, args []string) {
 		config, configPath, err := internal.Config()
 		internal.PrintErrFatal(err)
@@ -21,6 +20,7 @@ var execCmd = &cobra.Command{
 		err = internal.DockerContainerCmd(config, configPath, "exec", &args)
 		internal.PrintErrFatal(err)
 	},
+	DisableFlagParsing: true,
 }
 
 func init() {

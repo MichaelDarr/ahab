@@ -7,10 +7,9 @@ import (
 )
 
 var cmdCmd = &cobra.Command{
-	Use:                "cmd",
-	Short:              "Execute an attatched command in the container",
-	Args:               cobra.ArbitraryArgs,
-	DisableFlagParsing: true,
+	Use:   "cmd",
+	Short: "Execute an attatched command",
+	Args:  cobra.ArbitraryArgs,
 	Run: func(cmd *cobra.Command, args []string) {
 		config, configPath, err := internal.Config()
 		internal.PrintErrFatal(err)
@@ -23,6 +22,7 @@ var cmdCmd = &cobra.Command{
 		err = internal.DockerCmd(&execArgs)
 		internal.PrintErrFatal(err)
 	},
+	DisableFlagParsing: true,
 }
 
 func init() {

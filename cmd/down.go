@@ -8,7 +8,7 @@ import (
 
 var downCmd = &cobra.Command{
 	Use:   "down",
-	Short: "Stop and remove the container",
+	Short: "Stop and remove container",
 	Run: func(cmd *cobra.Command, args []string) {
 		config, configPath, err := internal.Config()
 		internal.PrintErrFatal(err)

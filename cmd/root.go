@@ -9,7 +9,7 @@ import (
 var rootCmd = &cobra.Command{
 	Use:     "dcfg",
 	Short:   "dcfg is a Docker configuration tool",
-	Long:    "A tool to configure and run Dockerized environments with ease.",
+	Long:    "Configure, launch, and work in Dockerized environments",
 	Version: internal.Version,
 }
 

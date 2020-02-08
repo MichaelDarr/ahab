@@ -8,7 +8,7 @@ import (
 
 var upCmd = &cobra.Command{
 	Use:   "up",
-	Short: "Create and start the container",
+	Short: "Create and start container",
 	Run: func(cmd *cobra.Command, args []string) {
 		config, configPath, err := internal.Config()
 		internal.PrintErrFatal(err)
