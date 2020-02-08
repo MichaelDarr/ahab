@@ -11,7 +11,7 @@ import (
 // Configuration contains all docker config fields
 type Configuration struct {
 	DcfgVersion string `json:"dcfg-version"`
-	ImageURL    string `json:"image"`
+	ImageURI    string `json:"image"`
 }
 
 // configFileName holds the name of the config file
@@ -92,7 +92,7 @@ func findConfigPath(topDir string) (configPath string, err error) {
 
 // missingConfigVars returns a comma-separated string of missing required config fields
 func missingConfigVars(config *Configuration) (missingVars string) {
-	if config.ImageURL == "" {
+	if config.ImageURI == "" {
 		missingVars = appendToStrList(missingVars, "image")
 	}
 	if config.DcfgVersion == "" {

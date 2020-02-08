@@ -10,7 +10,9 @@ var upCmd = &cobra.Command{
 	Use:   "up",
 	Short: "Create and start an environment",
 	Run: func(cmd *cobra.Command, args []string) {
-		internal.Docker()
+		config, _, err := internal.Config()
+		internal.PrintErrFatal(err)
+		internal.Docker("run", "-td", config.ImageURI)
 	},
 }
 
