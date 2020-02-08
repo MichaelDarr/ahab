@@ -13,10 +13,10 @@ var downCmd = &cobra.Command{
 		config, configPath, err := internal.Config()
 		internal.PrintErrFatal(err)
 
-		err = internal.DockerStop(config, configPath)
+		err = internal.StopContainer(config, configPath)
 		internal.PrintErrFatal(err)
 
-		err = internal.DockerRemove(config, configPath)
+		err = internal.RemoveContainer(config, configPath)
 		internal.PrintErrFatal(err)
 	},
 }

@@ -13,7 +13,7 @@ var upCmd = &cobra.Command{
 		config, configPath, err := internal.Config()
 		internal.PrintErrFatal(err)
 
-		err = internal.DockerUp(config, configPath)
+		err = internal.UpContainer(config, configPath)
 		internal.PrintErrFatal(err)
 	},
 }

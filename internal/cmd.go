@@ -53,12 +53,6 @@ func Docker(opts *[]string) (cmd *exec.Cmd) {
 	return
 }
 
-// DockerOutput runs a docker function behind the scenes and returns the output
-func DockerOutput(opts *[]string) ([]byte, error) {
-	cmd := Docker(opts)
-	return cmd.Output()
-}
-
 // DockerCmd prints a function, runs it, and attatches the output to the user's terminal
 func DockerCmd(opts *[]string) error {
 	cmd := Docker(opts)
@@ -67,8 +61,24 @@ func DockerCmd(opts *[]string) error {
 	return cmd.Run()
 }
 
-// DockerRemove removes an environment if it exists but is not running
-func DockerRemove(config *Configuration, configPath string) (err error) {
+// DockerContainerCmd runs a docker command on the active config's container
+// opts is sequence of strings here because these commands are usually set statically in code
+func DockerContainerCmd(config *Configuration, configPath string, cmd string, opts *[]string) error {
+	containerOpts := []string{cmd, ContainerName(config, configPath)}
+	if opts != nil {
+		containerOpts = append(containerOpts, *opts...)
+	}
+	return DockerCmd(&containerOpts)
+}
+
+// DockerOutput runs a docker function behind the scenes and returns the output
+func DockerOutput(opts *[]string) ([]byte, error) {
+	cmd := Docker(opts)
+	return cmd.Output()
+}
+
+// RemoveContainer removes an environment if it exists but is not running
+func RemoveContainer(config *Configuration, configPath string) (err error) {
 	status, err := ContainerStatus(config, configPath)
 	PrintErrFatal(err)
 	if status == 1 || status == 6 || status == 7 {
@@ -77,8 +87,8 @@ func DockerRemove(config *Configuration, configPath string) (err error) {
 	return
 }
 
-// DockerStop stops an environment if it is running
-func DockerStop(config *Configuration, configPath string) (err error) {
+// StopContainer stops an environment if it is running
+func StopContainer(config *Configuration, configPath string) (err error) {
 	status, err := ContainerStatus(config, configPath)
 	PrintErrFatal(err)
 	if status == 2 || status == 3 || status == 5 {
@@ -87,8 +97,8 @@ func DockerStop(config *Configuration, configPath string) (err error) {
 	return
 }
 
-// DockerUp creates and starts an environment
-func DockerUp(config *Configuration, configPath string) (err error) {
+// UpContainer creates and starts an environment
+func UpContainer(config *Configuration, configPath string) (err error) {
 	status, err := ContainerStatus(config, configPath)
 	PrintErrFatal(err)
 	if status == 0 {
@@ -100,16 +110,6 @@ func DockerUp(config *Configuration, configPath string) (err error) {
 		err = DockerContainerCmd(config, configPath, "unpause", nil)
 	}
 	return
-}
-
-// DockerContainerCmd runs a docker command on the active config's container
-// opts is sequence of strings here because these commands are usually set statically in code
-func DockerContainerCmd(config *Configuration, configPath string, cmd string, opts *[]string) error {
-	containerOpts := []string{cmd, ContainerName(config, configPath)}
-	if opts != nil {
-		containerOpts = append(containerOpts, *opts...)
-	}
-	return DockerCmd(&containerOpts)
 }
 
 // LaunchOpts returns options used to launch a container

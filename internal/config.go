@@ -110,6 +110,7 @@ func missingConfigVars(config *Configuration) (missingVars string) {
 	return
 }
 
+// versionOrdinal standardizes version strings for easy comparison
 // see https://stackoverflow.com/a/18411978
 func versionOrdinal(version string) string {
 	// ISO/IEC 14651:2011

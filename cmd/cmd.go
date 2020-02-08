@@ -14,7 +14,7 @@ var cmdCmd = &cobra.Command{
 		config, configPath, err := internal.Config()
 		internal.PrintErrFatal(err)
 
-		err = internal.DockerUp(config, configPath)
+		err = internal.UpContainer(config, configPath)
 		internal.PrintErrFatal(err)
 
 		execArgs := []string{"exec", "-it", internal.ContainerName(config, configPath)}

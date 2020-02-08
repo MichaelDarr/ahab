@@ -64,7 +64,7 @@ func appendToStrList(list string, newEl string) (finalStr string) {
 	return list + ", " + newEl
 }
 
-// surround a string with style codes
+// stylize surrounds a string with style codes
 func stylize(style string, str string) string {
 	textCode, ok := textCodes[style]
 	if ok {
