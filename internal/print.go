@@ -19,6 +19,11 @@ func PrintErr(err error) {
 	}
 }
 
+// PrintErrStr prints an error string to the console
+func PrintErrStr(errStr string) {
+	StylePrint("red", errStr)
+}
+
 // PrintErrFatal prints an error to the console and terminates the program (if non-nil)
 func PrintErrFatal(err error) {
 	if err != nil {

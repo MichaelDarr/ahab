@@ -14,7 +14,18 @@ var downCmd = &cobra.Command{
 		internal.PrintErrFatal(err)
 		status, err := internal.ContainerStatus(config, configPath)
 		internal.PrintErrFatal(err)
-		println(status)
+
+		if status == 0 {
+			internal.PrintWarning(1, "Container "+internal.ContainerName(config, configPath)+" is already down")
+			return
+		} else if status == 4 {
+			internal.PrintErrStr("Container " + internal.ContainerName(config, configPath) + " is being removed")
+			return
+		} else if status == 2 || status == 3 || status == 5 {
+			internal.DockerContainerCmd(config, configPath, "stop")
+		}
+
+		internal.DockerContainerCmd(config, configPath, "rm")
 	},
 }
 

@@ -19,9 +19,8 @@ import (
 // 5 - paused
 // 6 - exited
 // 7 - dead
-func ContainerStatus(config *Configuration, configPath string) (status int, err error) {
-	cmd := exec.Command("docker", "inspect", "-f", "'{{.State.Status}}'", ContainerName(config, configPath))
-	output, err := cmd.Output()
+func ContainerStatus(config *Configuration, configPath string) (int, error) {
+	output, err := DockerOutput(&[]string{"inspect", "-f", "'{{.State.Status}}'", ContainerName(config, configPath)})
 	if exitErr, ok := err.(*exec.ExitError); ok && exitErr.ExitCode() == 1 {
 		return 0, nil
 	} else if err != nil {
@@ -48,14 +47,31 @@ func ContainerStatus(config *Configuration, configPath string) (status int, err 
 	}
 }
 
-// Docker runs (and optionally prints) a Docker command
-func Docker(opts *[]string, printCmd bool) (err error) {
-	cmd := exec.Command("docker", *opts...)
+// Docker generates a Docker command
+func Docker(opts *[]string) (cmd *exec.Cmd) {
+	cmd = exec.Command("docker", *opts...)
+	return
+}
+
+// DockerOutput runs a docker function behind the scenes and returns the output
+func DockerOutput(opts *[]string) ([]byte, error) {
+	cmd := Docker(opts)
+	return cmd.Output()
+}
+
+// DockerCmd prints a function, runs it, and attatches the output to the user's terminal
+func DockerCmd(opts *[]string) error {
+	cmd := Docker(opts)
 	cmd.Stdin, cmd.Stdout, cmd.Stderr = os.Stdin, os.Stdout, os.Stderr
-	if printCmd {
-		PrintCmd(cmd)
-	}
+	PrintCmd(cmd)
 	return cmd.Run()
+}
+
+// DockerContainerCmd runs a docker command on the active config's container
+// opts is sequence of strings here because these commands are usually set statically in code
+func DockerContainerCmd(config *Configuration, configPath string, opts ...string) error {
+	containerOpts := append(opts, ContainerName(config, configPath))
+	return DockerCmd(&containerOpts)
 }
 
 // LaunchOpts returns options used to launch a container
