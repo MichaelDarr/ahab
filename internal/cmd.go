@@ -67,10 +67,48 @@ func DockerCmd(opts *[]string) error {
 	return cmd.Run()
 }
 
+// DockerRemove removes an environment if it exists but is not running
+func DockerRemove(config *Configuration, configPath string) (err error) {
+	status, err := ContainerStatus(config, configPath)
+	PrintErrFatal(err)
+	if status == 1 || status == 6 || status == 7 {
+		err = DockerContainerCmd(config, configPath, "rm", nil)
+	}
+	return
+}
+
+// DockerStop stops an environment if it is running
+func DockerStop(config *Configuration, configPath string) (err error) {
+	status, err := ContainerStatus(config, configPath)
+	PrintErrFatal(err)
+	if status == 2 || status == 3 || status == 5 {
+		err = DockerContainerCmd(config, configPath, "stop", nil)
+	}
+	return
+}
+
+// DockerUp creates and starts an environment
+func DockerUp(config *Configuration, configPath string) (err error) {
+	status, err := ContainerStatus(config, configPath)
+	PrintErrFatal(err)
+	if status == 0 {
+		launchOpts := append([]string{"run", "-td"}, LaunchOpts(config, configPath)...)
+		err = DockerCmd(&launchOpts)
+	} else if status == 1 || status == 6 || status == 7 {
+		err = DockerContainerCmd(config, configPath, "start", nil)
+	} else if status == 5 {
+		err = DockerContainerCmd(config, configPath, "unpause", nil)
+	}
+	return
+}
+
 // DockerContainerCmd runs a docker command on the active config's container
 // opts is sequence of strings here because these commands are usually set statically in code
-func DockerContainerCmd(config *Configuration, configPath string, opts ...string) error {
-	containerOpts := append(opts, ContainerName(config, configPath))
+func DockerContainerCmd(config *Configuration, configPath string, cmd string, opts *[]string) error {
+	containerOpts := []string{cmd, ContainerName(config, configPath)}
+	if opts != nil {
+		containerOpts = append(containerOpts, *opts...)
+	}
 	return DockerCmd(&containerOpts)
 }
 
@@ -79,10 +117,6 @@ func LaunchOpts(config *Configuration, configPath string) []string {
 	opts := expandEnvs(&config.Options)
 	for _, vol := range config.Volumes {
 		opts = append(opts, "-v", prepVolumeString(vol, configPath))
-	}
-
-	for _, env := range expandEnvs(&config.Environment) {
-		opts = append(opts, "-e", env)
 	}
 
 	if config.Workdir != "" {
@@ -115,6 +149,5 @@ func prepVolumeString(rawVolume string, configPath string) string {
 	} else if !strings.HasPrefix(volumeSplit[0], "/") {
 		volumeSplit[0] = path.Join(filepath.Dir(configPath), volumeSplit[0], "~")
 	}
-
 	return strings.Join(volumeSplit, ":")
 }

@@ -96,7 +96,6 @@ func findConfigPath(topDir string) (configPath string, err error) {
 	} else {
 		configPath = configTestPath
 	}
-
 	return
 }
 
@@ -108,7 +107,6 @@ func missingConfigVars(config *Configuration) (missingVars string) {
 	if config.DcfgVersion == "" {
 		missingVars = appendToStrList(missingVars, "version")
 	}
-
 	return
 }
 
