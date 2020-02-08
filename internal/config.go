@@ -66,6 +66,14 @@ func Config() (config *Configuration, configPath string, err error) {
 	return
 }
 
+// ContainerName returns a consistent container name for config file
+func ContainerName(config *Configuration, configPath string) string {
+	if config.Name == "" {
+		return ContainerPathName(configPath)
+	}
+	return config.Name
+}
+
 // checkConfigVersion returns a non-nil err if the passed version is newer the active dcfg version
 func checkConfigVersion(configVersion string) error {
 	configVersionOrd, selfVersionOrd := versionOrdinal(configVersion), versionOrdinal(Version)
