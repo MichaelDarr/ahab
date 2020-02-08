@@ -1,4 +1,7 @@
 {
     "image": "ubuntu:18.04",
-    "dcfg-version": "0.1"
+    "dcfg-version": "0.1",
+    "options": [
+        "--gpus", "all"
+    ]
 }

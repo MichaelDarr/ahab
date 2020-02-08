@@ -12,7 +12,12 @@ var upCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		config, _, err := internal.Config()
 		internal.PrintErrFatal(err)
-		internal.Docker("run", "-td", config.ImageURI)
+
+		launchOpts, err := internal.LaunchOpts(config)
+		internal.PrintErrFatal(err)
+
+		opts := append([]string{"run", "-td"}, launchOpts...)
+		internal.Docker(&opts)
 	},
 }
 

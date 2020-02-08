@@ -3,7 +3,14 @@ package internal
 import (
 	"fmt"
 	"os"
+	"os/exec"
+	"strings"
 )
+
+// PrintCmd prints a single command to the console
+func PrintCmd(cmd *exec.Cmd) {
+	StylePrint("cyan", "$ "+strings.Join(cmd.Args, " "))
+}
 
 // PrintErr prints an error to the console (if non-nil)
 func PrintErr(err error) {
