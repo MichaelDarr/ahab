@@ -47,6 +47,7 @@ func Config() (config *Configuration, configPath string, err error) {
 		return
 	}
 
+	expandConfEnv(config)
 	missingVars := missingConfigVars(config)
 	if missingVars != "" {
 		err = fmt.Errorf("Config file '%s' missing required fields: %s", configPath, missingVars)
@@ -57,14 +58,6 @@ func Config() (config *Configuration, configPath string, err error) {
 	return
 }
 
-// appendToStrList is a helper for creating human-readable comma-separated lists
-func appendToStrList(list string, newEl string) (finalStr string) {
-	if list == "" {
-		return newEl
-	}
-	return list + ", " + newEl
-}
-
 // checkConfigVersion returns a non-nil err if the passed version is newer the active dcfg version
 func checkConfigVersion(configVersion string) error {
 	configVersionOrd, selfVersionOrd := versionOrdinal(configVersion), versionOrdinal(Version)
@@ -72,6 +65,15 @@ func checkConfigVersion(configVersion string) error {
 		return fmt.Errorf("Config file requires dcfg >= %s (your version: %s)", configVersion, Version)
 	}
 	return nil
+}
+
+// expandConfEnv expands environment variables present certain config fields
+func expandConfEnv(config *Configuration) {
+	config.ImageURI = os.ExpandEnv(config.ImageURI)
+
+	for i, opt := range config.Options {
+		config.Options[i] = os.ExpandEnv(opt)
+	}
 }
 
 // findConfigPath recursively searches for a config file starting at topDir, ending at fs root

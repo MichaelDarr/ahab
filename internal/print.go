@@ -51,6 +51,14 @@ var textCodes = map[string]string{
 	"yellow":  "\x1b[33m",
 }
 
+// appendToStrList is a helper for creating human-readable comma-separated lists
+func appendToStrList(list string, newEl string) (finalStr string) {
+	if list == "" {
+		return newEl
+	}
+	return list + ", " + newEl
+}
+
 // surround a string with style codes
 func stylize(style string, str string) string {
 	textCode, ok := textCodes[style]
