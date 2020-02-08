@@ -14,6 +14,7 @@ default: $(BIN)
 .PHONY: build
 build: $(BIN)
 
+.PHONY: $(BIN)
 $(BIN): ## build docker-config as dcfg
 	$(GO) build $(GOFLAGS) -o $(BIN) .
 

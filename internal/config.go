@@ -1,4 +1,4 @@
-package main
+package internal
 
 import (
 	"encoding/json"
@@ -6,8 +6,6 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-
-	"github.com/MichaelDarr/docker-config/internal"
 )
 
 // Configuration contains all docker config fields
@@ -68,9 +66,9 @@ func appendToStrList(list string, newEl string) (finalStr string) {
 
 // checkConfigVersion returns a non-nil err if the passed version is newer the active dcfg version
 func checkConfigVersion(configVersion string) error {
-	configVersionOrd, selfVersionOrd := versionOrdinal(configVersion), versionOrdinal(internal.Version)
+	configVersionOrd, selfVersionOrd := versionOrdinal(configVersion), versionOrdinal(Version)
 	if configVersionOrd > selfVersionOrd {
-		return fmt.Errorf("Config file requires dcfg >= %s (your version: %s)", configVersion, internal.Version)
+		return fmt.Errorf("Config file requires dcfg >= %s (your version: %s)", configVersion, Version)
 	}
 	return nil
 }

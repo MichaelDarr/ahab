@@ -2,20 +2,18 @@ package cmd
 
 import (
 	"github.com/spf13/cobra"
+
+	"github.com/MichaelDarr/docker-config/internal"
 )
 
-// Version is the build-time dcfg version variable
-var Version string
-
-// RootCmd is the Cobra root command
-var RootCmd = &cobra.Command{
+var rootCmd = &cobra.Command{
 	Use:     "dcfg",
 	Short:   "dcfg is a Docker configuration tool",
 	Long:    "A tool to configure and run Dockerized environments with ease.",
-	Version: Version,
+	Version: internal.Version,
 }
 
 // Execute is the entrypoint to the dcfg CLI
 func Execute() {
-	RootCmd.Execute()
+	rootCmd.Execute()
 }

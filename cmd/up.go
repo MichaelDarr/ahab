@@ -1,19 +1,19 @@
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/spf13/cobra"
+
+	"github.com/MichaelDarr/docker-config/internal"
 )
 
 var upCmd = &cobra.Command{
 	Use:   "up",
 	Short: "Create and start an environment",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("test")
+		internal.Docker()
 	},
 }
 
 func init() {
-	RootCmd.AddCommand(upCmd)
+	rootCmd.AddCommand(upCmd)
 }
