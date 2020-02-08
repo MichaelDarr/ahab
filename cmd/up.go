@@ -13,9 +13,7 @@ var upCmd = &cobra.Command{
 		config, configPath, err := internal.Config()
 		internal.PrintErrFatal(err)
 
-		launchOpts, err := internal.LaunchOpts(config, configPath)
-		internal.PrintErrFatal(err)
-
+		launchOpts := internal.LaunchOpts(config, configPath)
 		opts := append([]string{"run", "-td"}, launchOpts...)
 		internal.Docker(&opts)
 	},
