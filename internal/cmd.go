@@ -27,10 +27,14 @@ func LaunchOpts(config *Configuration, configPath string) []string {
 		opts = append(opts, "-e", env)
 	}
 
-	if config.Name == "" {
-		opts = append(opts, "--name", ContainerPathName(configPath))
-	} else {
+	if config.Workdir != "" {
+		opts = append(opts, "-w", os.ExpandEnv(config.Workdir))
+	}
+
+	if config.Name != "" {
 		opts = append(opts, "--name", config.Name)
+	} else {
+		opts = append(opts, "--name", ContainerPathName(configPath))
 	}
 
 	return append(opts, os.ExpandEnv(config.ImageURI))

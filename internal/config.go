@@ -16,6 +16,7 @@ type Configuration struct {
 	Name        string   `json:"name"`
 	Options     []string `json:"options"`
 	Volumes     []string `json:"volumes"`
+	Workdir     string   `json:"workdir"`
 }
 
 // configFileName holds the name of the config file

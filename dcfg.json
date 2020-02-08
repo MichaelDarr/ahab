@@ -1,11 +1,12 @@
 {
     "name": "dcfg-source",
-    "image": "ubuntu:18.04",
+    "image": "golang:1.13.7-buster",
     "dcfg-version": "0.1",
-    "options": [
-        "--gpus", "all"
+    "environment": [
+        "GOPATH=/mnt/dcfg"
     ],
     "volumes": [
-        "./:/home/dcfg"
-    ]
+        "$GOPATH:/mnt/dcfg"
+    ],
+    "workdir": "/mnt/dcfg/src/github.com/MichaelDarr/docker-config"
 }
