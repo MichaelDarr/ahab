@@ -10,10 +10,10 @@ var upCmd = &cobra.Command{
 	Use:   "up",
 	Short: "Create and start an environment",
 	Run: func(cmd *cobra.Command, args []string) {
-		config, _, err := internal.Config()
+		config, configPath, err := internal.Config()
 		internal.PrintErrFatal(err)
 
-		launchOpts, err := internal.LaunchOpts(config)
+		launchOpts, err := internal.LaunchOpts(config, configPath)
 		internal.PrintErrFatal(err)
 
 		opts := append([]string{"run", "-td"}, launchOpts...)

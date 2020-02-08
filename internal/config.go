@@ -13,6 +13,7 @@ type Configuration struct {
 	DcfgVersion string   `json:"dcfg-version"`
 	ImageURI    string   `json:"image"`
 	Options     []string `json:"options"`
+	Volumes     []string `json:"volumes"`
 }
 
 // configFileName holds the name of the config file

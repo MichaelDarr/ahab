@@ -3,5 +3,8 @@
     "dcfg-version": "0.1",
     "options": [
         "--gpus", "all"
+    ],
+    "volumes": [
+        "./:/home/dcfg"
     ]
 }
