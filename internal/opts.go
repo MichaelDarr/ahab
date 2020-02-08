@@ -14,6 +14,16 @@ func LaunchOpts(config *Configuration, configPath string) (opts []string, err er
 		opts = append(opts, "-v", prepVolumeString(vol, configPath))
 	}
 
+	for _, env := range expandEnvs(&config.Environment) {
+		opts = append(opts, "-e", env)
+	}
+
+	if config.Name == "" {
+		opts = append(opts, "--name", ContainerPathName(configPath))
+	} else {
+		opts = append(opts, "--name", config.Name)
+	}
+
 	opts = append(opts, os.ExpandEnv(config.ImageURI))
 	return
 }

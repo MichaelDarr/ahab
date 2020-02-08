@@ -11,7 +11,9 @@ import (
 // Configuration contains all docker config fields
 type Configuration struct {
 	DcfgVersion string   `json:"dcfg-version"`
+	Environment []string `json:"environment"`
 	ImageURI    string   `json:"image"`
+	Name        string   `json:"name"`
 	Options     []string `json:"options"`
 	Volumes     []string `json:"volumes"`
 }
@@ -19,19 +21,24 @@ type Configuration struct {
 // configFileName holds the name of the config file
 const configFileName string = "dcfg.json"
 
-// ContainerName returns a filepath-based container name for a given config file
-func ContainerName(configPath string) (name string, err error) {
-	name = filepath.Dir(configPath)
-	name = strings.TrimPrefix(name, "/") // we don't want every name to begin with _
-	name = strings.ReplaceAll(name, "/", "_")
-	return
+// ContainerPathName returns a filepath-based container name for a given config file
+func ContainerPathName(configPath string) string {
+	name := filepath.Dir(configPath)
+	name = strings.TrimPrefix(name, "/")
+	return strings.ReplaceAll(name, "/", "_")
 }
 
 // Config finds and parses the docker config file relative to the working directory
 func Config() (config *Configuration, configPath string, err error) {
-	curDir, _ := os.Getwd()
+	curDir, err := os.Getwd()
+	if err != nil {
+		err = fmt.Errorf("Failed to get working directory: %s", err)
+		return
+	}
+
 	configPath, err = findConfigPath(curDir)
 	if err != nil {
+		err = fmt.Errorf("Failed to find config file: %s", err)
 		return
 	}
 
