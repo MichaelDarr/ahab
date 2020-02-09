@@ -102,7 +102,11 @@ func UpContainer(config *Configuration, configPath string) (err error) {
 	status, err := ContainerStatus(config, configPath)
 	PrintErrFatal(err)
 	if status == 0 {
-		launchOpts := append([]string{"run", "-td"}, LaunchOpts(config, configPath)...)
+		launchOpts, err := LaunchOpts(config, configPath)
+		if err != nil {
+			return err
+		}
+		launchOpts = append([]string{"run", "-td"}, launchOpts...)
 		err = DockerCmd(&launchOpts)
 	} else if status == 1 || status == 6 || status == 7 {
 		err = DockerContainerCmd(config, configPath, "start", nil)
@@ -113,10 +117,14 @@ func UpContainer(config *Configuration, configPath string) (err error) {
 }
 
 // LaunchOpts returns options used to launch a container
-func LaunchOpts(config *Configuration, configPath string) []string {
+func LaunchOpts(config *Configuration, configPath string) ([]string, error) {
 	opts := expandEnvs(&config.Options)
 	for _, vol := range config.Volumes {
-		opts = append(opts, "-v", prepVolumeString(vol, configPath))
+		volString, err := prepVolumeString(vol, configPath)
+		if err != nil {
+			return nil, err
+		}
+		opts = append(opts, "-v", volString)
 	}
 
 	if config.Workdir != "" {
@@ -124,7 +132,7 @@ func LaunchOpts(config *Configuration, configPath string) []string {
 	}
 
 	opts = append(opts, "--name", ContainerName(config, configPath))
-	return append(opts, os.ExpandEnv(config.ImageURI))
+	return append(opts, os.ExpandEnv(config.ImageURI)), nil
 }
 
 // expandConfEnv expands environment variables present in a slice of strings
@@ -137,7 +145,7 @@ func expandEnvs(toExpand *[]string) []string {
 }
 
 // prepVolumeString reformats a volume string, resolving local paths relative to the config dir
-func prepVolumeString(rawVolume string, configPath string) string {
+func prepVolumeString(rawVolume string, configPath string) (string, error) {
 	// expand volume env vars and split by first ":" in string
 	volumeSplit := strings.SplitN(os.ExpandEnv(rawVolume), ":", 2)
 
@@ -145,9 +153,13 @@ func prepVolumeString(rawVolume string, configPath string) string {
 	if strings.HasPrefix(volumeSplit[0], ".") {
 		volumeSplit[0] = path.Join(filepath.Dir(configPath), strings.TrimLeft(volumeSplit[0], "."))
 	} else if strings.HasPrefix(volumeSplit[0], "~") {
-		volumeSplit[0] = path.Join(filepath.Dir(configPath), strings.TrimLeft(volumeSplit[0], "~"))
+		homeDir, err := os.UserHomeDir()
+		if err != nil {
+			return "", err
+		}
+		volumeSplit[0] = path.Join(homeDir, strings.TrimLeft(volumeSplit[0], "~"))
 	} else if !strings.HasPrefix(volumeSplit[0], "/") {
 		volumeSplit[0] = path.Join(filepath.Dir(configPath), volumeSplit[0], "~")
 	}
-	return strings.Join(volumeSplit, ":")
+	return strings.Join(volumeSplit, ":"), nil
 }

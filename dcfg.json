@@ -6,7 +6,8 @@
         "GOPATH=/mnt/dcfg"
     ],
     "volumes": [
-        "$GOPATH:/mnt/dcfg"
+        "$GOPATH:/mnt/dcfg",
+        "~/.config:/mnt/config"
     ],
     "workdir": "/mnt/dcfg/src/github.com/MichaelDarr/docker-config"
 }
