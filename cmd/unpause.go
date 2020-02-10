@@ -14,10 +14,10 @@ var unpauseCmd = &cobra.Command{
 		helpRequested, err := internal.PrintDockerHelp(&args, "unpause", `Unpause all processes within container
 
 Docker Command:
-  docker unpause CONTAINER [ARG...]
+  docker unpause CONTAINER
 
 Usage:
-  `+internal.CmdName+` unpause [-h/--help] [ARG...]
+  `+internal.CmdName+` unpause [-h/--help]
 `)
 		internal.PrintErrFatal(err)
 		if helpRequested {
@@ -26,7 +26,7 @@ Usage:
 		config, configPath, err := internal.ProjectConfig()
 		internal.PrintErrFatal(err)
 
-		err = internal.DockerContainerCmd(config, configPath, "unpause", &args)
+		err = internal.DockerContainerCmd(config, configPath, "unpause", nil)
 		internal.PrintErrFatal(err)
 	},
 	DisableFlagParsing: true,

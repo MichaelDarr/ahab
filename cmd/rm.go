@@ -14,10 +14,10 @@ var rmCmd = &cobra.Command{
 		helpRequested, err := internal.PrintDockerHelp(&args, "rm", `Remove container
 
 Docker Command:
-  docker rm CONTAINER [ARG...]
+  docker rm [OPTIONS] CONTAINER
 
 Usage:
-  `+internal.CmdName+` rm [-h/--help] [ARG...]
+  `+internal.CmdName+` rm [-h/--help] [OPTIONS]
 `)
 		internal.PrintErrFatal(err)
 		if helpRequested {

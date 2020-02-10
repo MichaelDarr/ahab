@@ -77,10 +77,11 @@ func DockerCmd(opts *[]string) error {
 // DockerContainerCmd runs a docker command on the active config's container
 // opts is sequence of strings here because these commands are usually set statically in code
 func DockerContainerCmd(config *Configuration, configPath string, cmd string, opts *[]string) error {
-	containerOpts := []string{cmd, ContainerName(config, configPath)}
+	containerOpts := []string{cmd}
 	if opts != nil {
 		containerOpts = append(containerOpts, *opts...)
 	}
+	containerOpts = append(containerOpts, ContainerName(config, configPath))
 	return DockerCmd(&containerOpts)
 }
 

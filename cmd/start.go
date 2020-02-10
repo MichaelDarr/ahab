@@ -14,10 +14,10 @@ var startCmd = &cobra.Command{
 		helpRequested, err := internal.PrintDockerHelp(&args, "start", `Start stopped container
 
 Docker Command:
-  docker start CONTAINER [ARG...]
+  docker start [OPTIONS] CONTAINER
 
 Usage:
-  `+internal.CmdName+` start [-h/--help] [ARG...]
+  `+internal.CmdName+` start [-h/--help] [OPTIONS]
 `)
 		internal.PrintErrFatal(err)
 		if helpRequested {
