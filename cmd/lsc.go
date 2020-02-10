@@ -17,6 +17,5 @@ var lscCmd = &cobra.Command{
 
 func init() {
 	lscCmd.Flags().BoolVarP(&verbose, "verbose", "v", false, "View full container info")
-
 	rootCmd.AddCommand(lscCmd)
 }

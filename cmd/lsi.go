@@ -17,6 +17,5 @@ var lsiCmd = &cobra.Command{
 
 func init() {
 	lsiCmd.Flags().BoolVarP(&verbose, "verbose", "v", false, "View full image info")
-
 	rootCmd.AddCommand(lsiCmd)
 }
