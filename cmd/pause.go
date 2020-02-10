@@ -14,10 +14,10 @@ var pauseCmd = &cobra.Command{
 		helpRequested, err := internal.PrintDockerHelp(&args, "pause", `Pause all processes within container
 
 Docker Command:
-  docker pause CONTAINER
+  docker pause CONTAINER [ARG...]
 		
 Usage:
-  `+internal.CmdName+` pause [-h/--help]
+  `+internal.CmdName+` pause [-h/--help] [ARG...]
 		`)
 		internal.PrintErrFatal(err)
 		if helpRequested {
