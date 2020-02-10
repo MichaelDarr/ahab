@@ -17,8 +17,8 @@ build: $(BIN)
 
 .PHONY: $(BIN)
 $(BIN): ## build docker-config as dcon
-	$(GO) build $(GOFLAGS) -o $(BIN) .
+	$(GO) build $(GOFLAGS) -o $(BIN) main.go
 
 .PHONY: run
 run: ## build and run docker-config
-	$(GO) run $(GOFLAGS) .
+	$(GO) run $(GOFLAGS) main.go
