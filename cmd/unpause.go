@@ -6,23 +6,20 @@ import (
 	"github.com/MichaelDarr/docker-config/internal"
 )
 
-var execCmd = &cobra.Command{
-	Use:   "exec",
-	Short: "Run a command in a detatched command",
+var unpauseCmd = &cobra.Command{
+	Use:   "unpause",
+	Short: "Unpause all processes within container",
 	Args:  cobra.ArbitraryArgs,
 	Run: func(cmd *cobra.Command, args []string) {
 		config, configPath, err := internal.Config()
 		internal.PrintErrFatal(err)
 
-		err = internal.UpContainer(config, configPath)
-		internal.PrintErrFatal(err)
-
-		err = internal.DockerContainerCmd(config, configPath, "exec", &args)
+		err = internal.DockerContainerCmd(config, configPath, "unpause", &args)
 		internal.PrintErrFatal(err)
 	},
 	DisableFlagParsing: true,
 }
 
 func init() {
-	rootCmd.AddCommand(execCmd)
+	rootCmd.AddCommand(unpauseCmd)
 }
