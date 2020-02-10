@@ -6,17 +6,17 @@ import (
 	"github.com/MichaelDarr/docker-config/internal"
 )
 
-var exportCmd = &cobra.Command{
-	Use:   "export",
-	Short: "Export the container’s filesystem as a tar archive",
+var killCmd = &cobra.Command{
+	Use:   "kill",
+	Short: "Kill the container",
 	Run: func(cmd *cobra.Command, args []string) {
-		helpRequested, err := internal.PrintDockerHelp(&args, "export", `Export the container’s filesystem as a tar archive
+		helpRequested, err := internal.PrintDockerHelp(&args, "kill", `Kill the container
 
 Docker Command:
-  docker export [OPTIONS] CONTAINER
+  docker kill [OPTIONS] CONTAINER
 
 Usage:
-  `+internal.CmdName+` export [-h/--help] [OPTIONS]
+  `+internal.CmdName+` kill [-h/--help] [OPTIONS]
 `)
 		internal.PrintErrFatal(err)
 		if helpRequested {
@@ -25,7 +25,7 @@ Usage:
 		config, configPath, err := internal.ProjectConfig()
 		internal.PrintErrFatal(err)
 
-		err = internal.DockerContainerCmd(config, configPath, "export", &args)
+		err = internal.DockerContainerCmd(config, configPath, "kill", &args)
 		internal.PrintErrFatal(err)
 	},
 	Args:               cobra.ArbitraryArgs,
@@ -33,5 +33,5 @@ Usage:
 }
 
 func init() {
-	rootCmd.AddCommand(exportCmd)
+	rootCmd.AddCommand(killCmd)
 }
