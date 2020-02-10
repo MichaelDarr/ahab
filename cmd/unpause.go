@@ -11,6 +11,18 @@ var unpauseCmd = &cobra.Command{
 	Short: "Unpause all processes within container",
 	Args:  cobra.ArbitraryArgs,
 	Run: func(cmd *cobra.Command, args []string) {
+		helpRequested, err := internal.PrintDockerHelp(&args, "unpause", `Unpause all processes within container
+
+Docker Command:
+  docker unpause CONTAINER
+				
+Usage:
+  `+internal.CmdName+` unpause [-h/--help]
+`)
+		internal.PrintErrFatal(err)
+		if helpRequested {
+			return
+		}
 		config, configPath, err := internal.Config()
 		internal.PrintErrFatal(err)
 

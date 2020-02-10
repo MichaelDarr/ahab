@@ -9,6 +9,13 @@ import (
 var lsCmd = &cobra.Command{
 	Use:   "ls",
 	Short: "List containers, images, and volumes",
+	Long: `List containers, images, and volumes
+
+Docker Commands:
+  docker ps -a [FORMATTING FLAGS]
+  docker images [FORMATTING FLAGS]
+  docker volume ls
+`,
 	Run: func(cmd *cobra.Command, args []string) {
 		err := internal.ListContainers(verbose)
 		internal.PrintErrFatal(err)
@@ -20,7 +27,7 @@ var lsCmd = &cobra.Command{
 }
 
 func init() {
-	lsCmd.Flags().BoolVarP(&verbose, "verbose", "v", false, "View full info")
+	lsCmd.Flags().BoolVarP(&verbose, "verbose", "v", false, "View full Docker resource info")
 
 	rootCmd.AddCommand(lsCmd)
 }

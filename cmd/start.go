@@ -11,6 +11,19 @@ var startCmd = &cobra.Command{
 	Short: "Start stopped container",
 	Args:  cobra.ArbitraryArgs,
 	Run: func(cmd *cobra.Command, args []string) {
+		helpRequested, err := internal.PrintDockerHelp(&args, "start", `Start stopped container
+
+Docker Command:
+  docker start CONTAINER
+				
+Usage:
+  `+internal.CmdName+` start [-h/--help]
+`)
+		internal.PrintErrFatal(err)
+		if helpRequested {
+			return
+		}
+
 		config, configPath, err := internal.Config()
 		internal.PrintErrFatal(err)
 

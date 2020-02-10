@@ -9,6 +9,11 @@ import (
 var lsiCmd = &cobra.Command{
 	Use:   "lsi",
 	Short: "List images",
+	Long: `List images
+
+Docker Command:
+  docker images [FORMATTING FLAGS]
+`,
 	Run: func(cmd *cobra.Command, args []string) {
 		err := internal.ListImages(verbose)
 		internal.PrintErrFatal(err)

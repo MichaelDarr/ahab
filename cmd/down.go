@@ -9,7 +9,11 @@ import (
 var downCmd = &cobra.Command{
 	Use:   "down",
 	Short: "Stop and remove container",
-	Args:  cobra.NoArgs,
+	Long: `Stop and remove container
+
+Docker Command:
+  varies based on current container state`,
+	Args: cobra.NoArgs,
 	Run: func(cmd *cobra.Command, args []string) {
 		config, configPath, err := internal.Config()
 		internal.PrintErrFatal(err)

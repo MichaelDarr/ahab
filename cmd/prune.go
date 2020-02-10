@@ -11,6 +11,10 @@ var volumes bool
 var pruneCmd = &cobra.Command{
 	Use:   "prune",
 	Short: "Remove unused Docker assets",
+	Long: `Remove unused Docker assets
+
+Docker Command:
+  docker system prune -a [--volumes]`,
 	Run: func(cmd *cobra.Command, args []string) {
 		pruneArgs := []string{"system", "prune", "-a"}
 		if volumes {

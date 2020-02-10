@@ -8,20 +8,20 @@ import (
 
 var execCmd = &cobra.Command{
 	Use:   "exec",
-	Short: "Run a command in a detatched command",
+	Short: "Run a command in a container",
 	Args:  cobra.ArbitraryArgs,
 	Run: func(cmd *cobra.Command, args []string) {
-		for _, arg := range args {
-			if arg == "-h" || arg == "--help" {
-				err := internal.PrintDockerHelp("exec", `Usage:
-  `+internal.CmdName+` exec COMMAND [ARG...]
+		helpRequested, err := internal.PrintDockerHelp(&args, "exec", `Run a command in a container
 
 Docker Command:
   docker exec CONTAINER COMMAND [ARG...]
+
+Usage:
+  `+internal.CmdName+` exec [-h/--help] COMMAND [ARG...]
 `)
-				internal.PrintErrFatal(err)
-				return
-			}
+		internal.PrintErrFatal(err)
+		if helpRequested {
+			return
 		}
 
 		config, configPath, err := internal.Config()

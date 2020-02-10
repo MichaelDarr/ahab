@@ -12,11 +12,17 @@ func PrintCmd(cmd *exec.Cmd) {
 	StylePrint("cyan", "$ "+strings.Join(cmd.Args, " "))
 }
 
-// PrintDockerHelp prints a simple internal help menu before running the corresponsing docker help command
-func PrintDockerHelp(dockerCmd string, helpString string) error {
-	fmt.Println(helpString)
-	helpArgs := []string{dockerCmd, "--help"}
-	return DockerCmd(&helpArgs)
+// PrintDockerHelp parses args for a help flag, printing a help menu and running corresponsing docker help command if requested
+func PrintDockerHelp(cmdArgs *[]string, dockerCmd string, helpString string) (helpRequested bool, err error) {
+	for _, arg := range *cmdArgs {
+		if arg == "-h" || arg == "--help" {
+			helpRequested = true
+			fmt.Println(helpString)
+			helpArgs := []string{dockerCmd, "--help"}
+			err = DockerCmd(&helpArgs)
+		}
+	}
+	return
 }
 
 // PrintErr prints an error to the console (if non-nil)

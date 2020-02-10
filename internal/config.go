@@ -20,7 +20,7 @@ type Configuration struct {
 }
 
 // configFileName holds the name of the config file
-const configFileName string = "dcfg.json"
+var configFileName string = CmdName + ".json"
 
 // ContainerPathName returns a filepath-based container name for a given config file
 func ContainerPathName(configPath string) string {

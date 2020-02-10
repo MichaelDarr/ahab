@@ -9,6 +9,11 @@ import (
 var lscCmd = &cobra.Command{
 	Use:   "lsc",
 	Short: "List containers",
+	Long: `List containers
+
+Docker Command:
+  docker ps -a [FORMATTING FLAGS]
+`,
 	Run: func(cmd *cobra.Command, args []string) {
 		err := internal.ListContainers(verbose)
 		internal.PrintErrFatal(err)

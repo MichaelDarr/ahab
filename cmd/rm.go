@@ -11,6 +11,19 @@ var rmCmd = &cobra.Command{
 	Short: "Remove container",
 	Args:  cobra.ArbitraryArgs,
 	Run: func(cmd *cobra.Command, args []string) {
+		helpRequested, err := internal.PrintDockerHelp(&args, "rm", `Remove container
+
+Docker Command:
+  docker rm CONTAINER
+				
+Usage:
+  `+internal.CmdName+` rm [-h/--help]
+`)
+		internal.PrintErrFatal(err)
+		if helpRequested {
+			return
+		}
+
 		config, configPath, err := internal.Config()
 		internal.PrintErrFatal(err)
 

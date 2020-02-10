@@ -10,8 +10,10 @@ var bashCmd = &cobra.Command{
 	Use:   "bash",
 	Short: "Open a containerized bash shell",
 	Long: `Attach a containerized bash shell to the active console.
+  * bash must be installed in your image for this command to function!
 
-*Warning!* bash must be installed in your image for this command to function!`,
+Docker Command:
+  docker exec -it CONTAINER bash`,
 	Args: cobra.NoArgs,
 	Run: func(cmd *cobra.Command, args []string) {
 		config, configPath, err := internal.Config()
