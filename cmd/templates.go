@@ -32,7 +32,7 @@ func OptionCommand(command string, description string) cobra.Command {
 		Use:   command,
 		Short: description,
 		Run: func(cmd *cobra.Command, args []string) {
-			helpRequested, err := internal.PrintDockerHelp(&args, "kill", description+`
+			helpRequested, err := internal.PrintDockerHelp(&args, command, description+`
 
 Docker Command:
   docker `+command+` [OPTIONS] CONTAINER
