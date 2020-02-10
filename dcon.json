@@ -1,13 +1,12 @@
 {
     "name": "docker-config-source",
     "image": "golang:1.13.7-buster",
-    "dcfg-version": "0.1",
+    "dcon-version": "0.1",
     "environment": [
         "GOPATH=/mnt/docker-config"
     ],
     "volumes": [
         "$GOPATH:/mnt/docker-config"
     ],
-    "shareX11": true,
     "workdir": "/mnt/docker-config/src/github.com/MichaelDarr/docker-config"
 }

@@ -10,7 +10,7 @@ import (
 
 // Configuration contains all docker config fields
 type Configuration struct {
-	DcfgVersion string   `json:"dcfg-version"`
+	DconVersion string   `json:"dcon-version"`
 	Environment []string `json:"environment"`
 	ImageURI    string   `json:"image"`
 	Name        string   `json:"name"`
@@ -63,7 +63,7 @@ func Config() (config *Configuration, configPath string, err error) {
 		return
 	}
 
-	err = checkConfigVersion(config.DcfgVersion)
+	err = checkConfigVersion(config.DconVersion)
 	return
 }
 
@@ -105,7 +105,7 @@ func missingConfigVars(config *Configuration) (missingVars string) {
 	if config.ImageURI == "" {
 		missingVars = appendToStrList(missingVars, "image")
 	}
-	if config.DcfgVersion == "" {
+	if config.DconVersion == "" {
 		missingVars = appendToStrList(missingVars, "version")
 	}
 	return
