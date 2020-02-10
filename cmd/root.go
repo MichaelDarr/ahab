@@ -9,8 +9,8 @@ import (
 var verbose bool
 
 var rootCmd = &cobra.Command{
-	Use:     "dcfg",
-	Short:   "dcfg is a Docker configuration tool",
+	Use:     "dcon",
+	Short:   "dcon is a Docker configuration tool",
 	Long:    "Configure, launch, and work in Dockerized environments",
 	Version: internal.Version,
 }

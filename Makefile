@@ -2,7 +2,7 @@
 # github.com/MichaelDarr/docker-config
 #
 
-BIN := dcfg
+BIN := dcon
 GO ?= go
 VERSION = $(shell cat VERSION)
 
@@ -15,7 +15,7 @@ default: $(BIN)
 build: $(BIN)
 
 .PHONY: $(BIN)
-$(BIN): ## build docker-config as dcfg
+$(BIN): ## build docker-config as dcon
 	$(GO) build $(GOFLAGS) -o $(BIN) .
 
 .PHONY: run
