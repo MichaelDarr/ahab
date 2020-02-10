@@ -9,7 +9,6 @@ import (
 var startCmd = &cobra.Command{
 	Use:   "start",
 	Short: "Start stopped container",
-	Args:  cobra.ArbitraryArgs,
 	Run: func(cmd *cobra.Command, args []string) {
 		helpRequested, err := internal.PrintDockerHelp(&args, "start", `Start stopped container
 
@@ -30,6 +29,7 @@ Usage:
 		err = internal.DockerContainerCmd(config, configPath, "start", &args)
 		internal.PrintErrFatal(err)
 	},
+	Args:               cobra.ArbitraryArgs,
 	DisableFlagParsing: true,
 }
 

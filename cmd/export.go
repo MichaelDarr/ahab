@@ -7,17 +7,17 @@ import (
 )
 
 // TODO: support argument to tag the commit
-var commitCmd = &cobra.Command{
-	Use:   "commit",
-	Short: "Create a new image from the container's changes",
+var exportCmd = &cobra.Command{
+	Use:   "export",
+	Short: "Export the container’s filesystem as a tar archive",
 	Run: func(cmd *cobra.Command, args []string) {
-		helpRequested, err := internal.PrintDockerHelp(&args, "commit", `Create a new image from the container's changes
+		helpRequested, err := internal.PrintDockerHelp(&args, "export", `Export the container’s filesystem as a tar archive
 
 Docker Command:
-  docker commit [OPTIONS] CONTAINER
+  docker export [OPTIONS] CONTAINER
 
 Usage:
-  `+internal.CmdName+` commit [-h/--help] [OPTIONS]
+  `+internal.CmdName+` export [-h/--help] [OPTIONS]
 `)
 		internal.PrintErrFatal(err)
 		if helpRequested {
@@ -26,7 +26,7 @@ Usage:
 		config, configPath, err := internal.ProjectConfig()
 		internal.PrintErrFatal(err)
 
-		err = internal.DockerContainerCmd(config, configPath, "commit", &args)
+		err = internal.DockerContainerCmd(config, configPath, "export", &args)
 		internal.PrintErrFatal(err)
 	},
 	Args:               cobra.ArbitraryArgs,
@@ -34,5 +34,5 @@ Usage:
 }
 
 func init() {
-	rootCmd.AddCommand(commitCmd)
+	rootCmd.AddCommand(exportCmd)
 }

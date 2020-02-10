@@ -15,7 +15,6 @@ var zshCmd = &cobra.Command{
 
 Docker Command:
   docker exec -it CONTAINER zsh`,
-	Args: cobra.NoArgs,
 	Run: func(cmd *cobra.Command, args []string) {
 		config, configPath, err := internal.ProjectConfig()
 		internal.PrintErrFatal(err)

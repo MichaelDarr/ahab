@@ -9,7 +9,6 @@ import (
 var execCmd = &cobra.Command{
 	Use:   "exec",
 	Short: "Run a command in a container",
-	Args:  cobra.ArbitraryArgs,
 	Run: func(cmd *cobra.Command, args []string) {
 		helpRequested, err := internal.PrintDockerHelp(&args, "exec", `Run a command in a container
 
@@ -33,6 +32,7 @@ Usage:
 		err = internal.DockerContainerCmd(config, configPath, "exec", &args)
 		internal.PrintErrFatal(err)
 	},
+	Args:               cobra.ArbitraryArgs,
 	DisableFlagParsing: true,
 }
 

@@ -9,7 +9,6 @@ import (
 var attachCmd = &cobra.Command{
 	Use:   "attach",
 	Short: "Attach local standard input, output, and error streams to container",
-	Args:  cobra.ArbitraryArgs,
 	Run: func(cmd *cobra.Command, args []string) {
 		helpRequested, err := internal.PrintDockerHelp(&args, "attach", `Attach local standard input, output, and error streams to container
 
@@ -29,6 +28,7 @@ Usage:
 		err = internal.DockerContainerCmd(config, configPath, "attach", &args)
 		internal.PrintErrFatal(err)
 	},
+	Args:               cobra.ArbitraryArgs,
 	DisableFlagParsing: true,
 }
 

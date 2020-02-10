@@ -12,7 +12,7 @@ var createCmd = &cobra.Command{
 	Long: `Create the container
 
 Docker Command:
-  docker create [OPTIONS]
+  docker create [CONFIG_OPTIONS]
 `,
 	Run: func(cmd *cobra.Command, args []string) {
 		config, configPath, err := internal.ProjectConfig()

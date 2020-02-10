@@ -9,7 +9,6 @@ import (
 var rmCmd = &cobra.Command{
 	Use:   "rm",
 	Short: "Remove container",
-	Args:  cobra.ArbitraryArgs,
 	Run: func(cmd *cobra.Command, args []string) {
 		helpRequested, err := internal.PrintDockerHelp(&args, "rm", `Remove container
 
@@ -30,6 +29,7 @@ Usage:
 		err = internal.DockerContainerCmd(config, configPath, "rm", &args)
 		internal.PrintErrFatal(err)
 	},
+	Args:               cobra.ArbitraryArgs,
 	DisableFlagParsing: true,
 }
 
