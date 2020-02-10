@@ -10,6 +10,19 @@ import (
 	"strings"
 )
 
+// ContainerProp returns a property of a config's container, or an empty string if it is not created
+func ContainerProp(config *Configuration, configPath string, fieldID string) (string, error) {
+	output, err := DockerOutput(&[]string{"inspect", "-f", "{{." + fieldID + "}}", ContainerName(config, configPath)})
+	if exitErr, ok := err.(*exec.ExitError); ok && exitErr.ExitCode() == 1 {
+		return "", nil
+	} else if err != nil {
+		return "", err
+	} else {
+		idString := string(output)
+		return strings.Trim(idString, " \n"), nil
+	}
+}
+
 // ContainerStatus returns a code corresponding to the status of a config's container. Codes:
 // 0 - not found
 // 1 - created
@@ -20,7 +33,7 @@ import (
 // 6 - exited
 // 7 - dead
 func ContainerStatus(config *Configuration, configPath string) (int, error) {
-	output, err := DockerOutput(&[]string{"inspect", "-f", "'{{.State.Status}}'", ContainerName(config, configPath)})
+	output, err := DockerOutput(&[]string{"inspect", "-f", "{{.State.Status}}", ContainerName(config, configPath)})
 	if exitErr, ok := err.(*exec.ExitError); ok && exitErr.ExitCode() == 1 {
 		return 0, nil
 	} else if err != nil {

@@ -15,7 +15,7 @@ var pauseCmd = &cobra.Command{
 
 Docker Command:
   docker pause CONTAINER [ARG...]
-		
+
 Usage:
   `+internal.CmdName+` pause [-h/--help] [ARG...]
 		`)

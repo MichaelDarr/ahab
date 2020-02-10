@@ -15,7 +15,7 @@ var stopCmd = &cobra.Command{
 
 Docker Command:
   docker stop CONTAINER [ARG...]
-		
+
 Usage:
   `+internal.CmdName+` stop [-h/--help] [ARG...]
 `)

@@ -15,7 +15,7 @@ var cmdCmd = &cobra.Command{
 
 Docker Command:
   docker exec -it CONTAINER COMMAND [ARG...]
-			  
+
 Usage:
   `+internal.CmdName+` cmd [-h/--help] COMMAND [ARG...]
 `)

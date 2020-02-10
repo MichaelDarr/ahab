@@ -15,7 +15,7 @@ var rmCmd = &cobra.Command{
 
 Docker Command:
   docker rm CONTAINER [ARG...]
-				
+
 Usage:
   `+internal.CmdName+` rm [-h/--help] [ARG...]
 `)

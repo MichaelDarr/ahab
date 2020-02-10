@@ -15,7 +15,7 @@ var startCmd = &cobra.Command{
 
 Docker Command:
   docker start CONTAINER [ARG...]
-				
+
 Usage:
   `+internal.CmdName+` start [-h/--help] [ARG...]
 `)

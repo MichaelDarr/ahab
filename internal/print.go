@@ -45,6 +45,11 @@ func PrintErrFatal(err error) {
 	}
 }
 
+// PrintIndentedPair prints a key/val pair in a human-readable format
+func PrintIndentedPair(key string, val string) {
+	fmt.Printf("  %-12s%s\n", key, val)
+}
+
 // PrintWarning prints a warning to the console. Severity: 0-dev, 1-moderate, 2-severe
 // TODO: condition warning prints on severity/verbosity, set from config or CLI
 func PrintWarning(severity int, warning string) {
