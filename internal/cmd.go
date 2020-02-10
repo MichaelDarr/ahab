@@ -77,6 +77,30 @@ func DockerOutput(opts *[]string) ([]byte, error) {
 	return cmd.Output()
 }
 
+// ListContainers executes a docker command to list all containers
+func ListContainers(verbose bool) error {
+	execArgs := []string{"ps", "-a"}
+	if !verbose {
+		execArgs = append(execArgs, "--format", "table {{.Names}}\t{{.ID}}\t{{.Status}}")
+	}
+	return DockerCmd(&execArgs)
+}
+
+// ListImages executes a docker command to list all images
+func ListImages(verbose bool) error {
+	execArgs := []string{"images"}
+	if !verbose {
+		execArgs = append(execArgs, "--format", "table {{.Tag}}\t{{.ID}}\t{{.Size}}")
+	}
+	return DockerCmd(&execArgs)
+}
+
+// ListVolumes executes a docker command to list all images
+func ListVolumes() error {
+	execArgs := []string{"volume", "ls"}
+	return DockerCmd(&execArgs)
+}
+
 // RemoveContainer removes an environment if it exists but is not running
 func RemoveContainer(config *Configuration, configPath string) (err error) {
 	status, err := ContainerStatus(config, configPath)

@@ -6,6 +6,8 @@ import (
 	"github.com/MichaelDarr/docker-config/internal"
 )
 
+var verbose bool
+
 var rootCmd = &cobra.Command{
 	Use:     "dcfg",
 	Short:   "dcfg is a Docker configuration tool",
