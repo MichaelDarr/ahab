@@ -12,7 +12,7 @@ var statusCmd = &cobra.Command{
 	Use:   "status",
 	Short: "Print container status",
 	Run: func(cmd *cobra.Command, args []string) {
-		config, configPath, err := internal.Config()
+		config, configPath, err := internal.ProjectConfig()
 		internal.PrintErrFatal(err)
 
 		fmt.Println("Container:")

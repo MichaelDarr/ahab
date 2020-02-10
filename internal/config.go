@@ -20,6 +20,14 @@ type Configuration struct {
 	Workdir     string   `json:"workdir"`
 }
 
+// UserConfiguration contains global user config fields
+type UserConfiguration struct {
+	Environment  []string `json:"environment"`
+	Options      []string `json:"options"`
+	HideCommands bool     `json:"hideCommands"`
+	Volumes      []string `json:"volumes"`
+}
+
 // configFileName holds the name of the config file
 var configFileName string = CmdName + ".json"
 
@@ -30,8 +38,16 @@ func ContainerPathName(configPath string) string {
 	return strings.ReplaceAll(name, "/", "_")
 }
 
-// Config finds and parses the docker config file relative to the working directory
-func Config() (config *Configuration, configPath string, err error) {
+// ContainerName returns a consistent container name for config file
+func ContainerName(config *Configuration, configPath string) string {
+	if config.Name == "" {
+		return ContainerPathName(configPath)
+	}
+	return config.Name
+}
+
+// ProjectConfig finds and parses the docker config file relative to the working directory
+func ProjectConfig() (config *Configuration, configPath string, err error) {
 	curDir, err := os.Getwd()
 	if err != nil {
 		err = fmt.Errorf("Failed to get working directory: %s", err)
@@ -67,12 +83,28 @@ func Config() (config *Configuration, configPath string, err error) {
 	return
 }
 
-// ContainerName returns a consistent container name for config file
-func ContainerName(config *Configuration, configPath string) string {
-	if config.Name == "" {
-		return ContainerPathName(configPath)
+// UserConfig finds and parses the user's docker config file
+func UserConfig() (userConfig *UserConfiguration, err error) {
+	homeDir, err := os.UserHomeDir()
+	if err != nil {
+		err = fmt.Errorf("Failed to get user home directory: %s", err)
+		return
 	}
-	return config.Name
+
+	configPath := filepath.Join(homeDir, ".config/"+CmdName+"/config.json")
+	configFile, err := os.Open(configPath)
+	if err != nil && os.IsNotExist(err) {
+		var blankConfig UserConfiguration
+		return &blankConfig, nil
+	}
+	defer configFile.Close()
+
+	decoder := json.NewDecoder(configFile)
+	if err = decoder.Decode(&userConfig); err != nil {
+		err = fmt.Errorf("Failed to parse user config file: %s", err)
+	}
+
+	return
 }
 
 // checkConfigVersion returns a non-nil err if the passed version is newer the active dcfg version
@@ -106,7 +138,7 @@ func missingConfigVars(config *Configuration) (missingVars string) {
 		missingVars = appendToStrList(missingVars, "image")
 	}
 	if config.DconVersion == "" {
-		missingVars = appendToStrList(missingVars, "version")
+		missingVars = appendToStrList(missingVars, "dcon-version")
 	}
 	return
 }

@@ -23,7 +23,7 @@ Usage:
 		if helpRequested {
 			return
 		}
-		config, configPath, err := internal.Config()
+		config, configPath, err := internal.ProjectConfig()
 		internal.PrintErrFatal(err)
 
 		err = internal.DockerContainerCmd(config, configPath, "unpause", &args)

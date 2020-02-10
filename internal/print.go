@@ -9,7 +9,10 @@ import (
 
 // PrintCmd prints a single command to the console
 func PrintCmd(cmd *exec.Cmd) {
-	StylePrint("cyan", "$ "+strings.Join(cmd.Args, " "))
+	userConfig, err := UserConfig()
+	if err == nil && !userConfig.HideCommands {
+		StylePrint("cyan", "$ "+strings.Join(cmd.Args, " "))
+	}
 }
 
 // PrintDockerHelp parses args for a help flag, printing a help menu and running corresponsing docker help command if requested
@@ -50,9 +53,8 @@ func PrintIndentedPair(key string, val string) {
 	fmt.Printf("  %-12s%s\n", key, val)
 }
 
-// PrintWarning prints a warning to the console. Severity: 0-dev, 1-moderate, 2-severe
-// TODO: condition warning prints on severity/verbosity, set from config or CLI
-func PrintWarning(severity int, warning string) {
+// PrintWarning prints a warning string to the console
+func PrintWarning(warning string) {
 	StylePrint("yellow", warning)
 }
 
@@ -88,6 +90,6 @@ func stylize(style string, str string) string {
 	if ok {
 		return textCode + str + textCodes["reset"]
 	}
-	PrintWarning(0, "Unsupported text style: "+style)
+	PrintWarning("Unsupported text style: " + style)
 	return str
 }

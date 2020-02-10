@@ -17,7 +17,7 @@ Docker Command:
   docker exec -it CONTAINER sh`,
 	Args: cobra.NoArgs,
 	Run: func(cmd *cobra.Command, args []string) {
-		config, configPath, err := internal.Config()
+		config, configPath, err := internal.ProjectConfig()
 		internal.PrintErrFatal(err)
 
 		err = internal.UpContainer(config, configPath)

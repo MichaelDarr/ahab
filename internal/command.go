@@ -99,7 +99,20 @@ func DockerXHostAuth() error {
 
 // LaunchOpts prepares the host to launch a container and returns options used to launch it
 func LaunchOpts(config *Configuration, configPath string) (opts []string, err error) {
+	userConfig, err := UserConfig()
+
+	// user-specified options
 	opts = expandEnvs(&config.Options)
+	opts = append(opts, expandEnvs(&userConfig.Options)...)
+
+	// environment
+	envStrings := expandEnvs(&config.Environment)
+	envStrings = append(envStrings, expandEnvs(&userConfig.Environment)...)
+	for _, envString := range envStrings {
+		opts = append(opts, "-e", envString)
+	}
+
+	// volumes
 	for _, vol := range config.Volumes {
 		volString, err := prepVolumeString(vol, configPath)
 		if err != nil {
@@ -107,16 +120,26 @@ func LaunchOpts(config *Configuration, configPath string) (opts []string, err er
 		}
 		opts = append(opts, "-v", volString)
 	}
+	for _, vol := range userConfig.Volumes {
+		volString, err := prepVolumeString(vol, configPath)
+		if err != nil {
+			return nil, err
+		}
+		opts = append(opts, "-v", volString)
+	}
 
+	// workdir
 	if config.Workdir != "" {
 		opts = append(opts, "-w", os.ExpandEnv(config.Workdir))
 	}
 
+	// xhost sharing
 	if config.ShareX11 {
 		err = DockerXHostAuth()
 		opts = append(opts, "-v", "/tmp/.X11-unix:/tmp/.X11-unix", "-e", "DISPLAY="+os.Getenv("DISPLAY"))
 	}
 
+	// container name and image
 	return append(opts, "--name", ContainerName(config, configPath), os.ExpandEnv(config.ImageURI)), err
 }
 
