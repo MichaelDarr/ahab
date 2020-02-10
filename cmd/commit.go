@@ -27,14 +27,8 @@ Usage:
 		config, configPath, err := internal.ProjectConfig()
 		internal.PrintErrFatal(err)
 
-		containerExists, err := internal.ContainerExists(config, configPath)
+		err = internal.DockerContainerCmd(config, configPath, "commit", &args)
 		internal.PrintErrFatal(err)
-		if !containerExists {
-			internal.PrintErrStr("Container is not created, cannot commit changes.")
-		} else {
-			err = internal.DockerContainerCmd(config, configPath, "commit", &args)
-			internal.PrintErrFatal(err)
-		}
 	},
 	DisableFlagParsing: true,
 }

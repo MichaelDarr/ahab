@@ -26,9 +26,6 @@ Usage:
 		config, configPath, err := internal.ProjectConfig()
 		internal.PrintErrFatal(err)
 
-		err = internal.UpContainer(config, configPath)
-		internal.PrintErrFatal(err)
-
 		err = internal.DockerContainerCmd(config, configPath, "attach", &args)
 		internal.PrintErrFatal(err)
 	},

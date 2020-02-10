@@ -10,15 +10,6 @@ import (
 	"strings"
 )
 
-// ContainerExists returns true if the container for a configuration exists
-func ContainerExists(config *Configuration, configPath string) (exists bool, err error) {
-	containerStatus, err := ContainerStatus(config, configPath)
-	if err == nil && containerStatus != 0 {
-		exists = true
-	}
-	return
-}
-
 // ContainerProp returns a property of a config's container, or an empty string if it is not created
 func ContainerProp(config *Configuration, configPath string, fieldID string) (string, error) {
 	output, err := DockerOutput(&[]string{"inspect", "-f", "{{." + fieldID + "}}", ContainerName(config, configPath)})

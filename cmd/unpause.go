@@ -9,27 +9,18 @@ import (
 var unpauseCmd = &cobra.Command{
 	Use:   "unpause",
 	Short: "Unpause all processes within container",
-	Args:  cobra.ArbitraryArgs,
-	Run: func(cmd *cobra.Command, args []string) {
-		helpRequested, err := internal.PrintDockerHelp(&args, "unpause", `Unpause all processes within container
+	Long: `Unpause all processes within container
 
 Docker Command:
   docker unpause CONTAINER
-
-Usage:
-  `+internal.CmdName+` unpause [-h/--help]
-`)
-		internal.PrintErrFatal(err)
-		if helpRequested {
-			return
-		}
+`,
+	Run: func(cmd *cobra.Command, args []string) {
 		config, configPath, err := internal.ProjectConfig()
 		internal.PrintErrFatal(err)
 
 		err = internal.DockerContainerCmd(config, configPath, "unpause", nil)
 		internal.PrintErrFatal(err)
 	},
-	DisableFlagParsing: true,
 }
 
 func init() {
