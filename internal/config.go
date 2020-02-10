@@ -15,6 +15,7 @@ type Configuration struct {
 	ImageURI    string   `json:"image"`
 	Name        string   `json:"name"`
 	Options     []string `json:"options"`
+	ShareX11    bool     `json:"shareX11"`
 	Volumes     []string `json:"volumes"`
 	Workdir     string   `json:"workdir"`
 }

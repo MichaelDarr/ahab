@@ -8,5 +8,6 @@
     "volumes": [
         "$GOPATH:/mnt/docker-config"
     ],
+    "shareX11": true,
     "workdir": "/mnt/docker-config/src/github.com/MichaelDarr/docker-config"
 }

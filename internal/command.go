@@ -90,6 +90,36 @@ func DockerOutput(opts *[]string) ([]byte, error) {
 	return cmd.Output()
 }
 
+// DockerXHostAuth gives the docker user xhost access so containerized apps can run on the host's WM
+// TODO: check if the Docker user already has access before re-granting access
+func DockerXHostAuth() error {
+	cmd := exec.Command("xhost", "+local:docker")
+	return cmd.Run()
+}
+
+// LaunchOpts prepares the host to launch a container and returns options used to launch it
+func LaunchOpts(config *Configuration, configPath string) (opts []string, err error) {
+	opts = expandEnvs(&config.Options)
+	for _, vol := range config.Volumes {
+		volString, err := prepVolumeString(vol, configPath)
+		if err != nil {
+			return nil, err
+		}
+		opts = append(opts, "-v", volString)
+	}
+
+	if config.Workdir != "" {
+		opts = append(opts, "-w", os.ExpandEnv(config.Workdir))
+	}
+
+	if config.ShareX11 {
+		err = DockerXHostAuth()
+		opts = append(opts, "-v", "/tmp/.X11-unix:/tmp/.X11-unix", "-e", "DISPLAY="+os.Getenv("DISPLAY"))
+	}
+
+	return append(opts, "--name", ContainerName(config, configPath), os.ExpandEnv(config.ImageURI)), err
+}
+
 // ListContainers executes a docker command to list all containers
 func ListContainers(verbose bool) error {
 	execArgs := []string{"ps", "-a"}
@@ -151,25 +181,6 @@ func UpContainer(config *Configuration, configPath string) (err error) {
 		err = DockerContainerCmd(config, configPath, "unpause", nil)
 	}
 	return
-}
-
-// LaunchOpts returns options used to launch a container
-func LaunchOpts(config *Configuration, configPath string) ([]string, error) {
-	opts := expandEnvs(&config.Options)
-	for _, vol := range config.Volumes {
-		volString, err := prepVolumeString(vol, configPath)
-		if err != nil {
-			return nil, err
-		}
-		opts = append(opts, "-v", volString)
-	}
-
-	if config.Workdir != "" {
-		opts = append(opts, "-w", os.ExpandEnv(config.Workdir))
-	}
-
-	opts = append(opts, "--name", ContainerName(config, configPath))
-	return append(opts, os.ExpandEnv(config.ImageURI)), nil
 }
 
 // expandConfEnv expands environment variables present in a slice of strings
