@@ -6,7 +6,8 @@ BIN := dcon
 GO ?= go
 VERSION = $(shell cat VERSION)
 
-GOFLAGS := -ldflags "-X github.com/MichaelDarr/docker-config/internal.Version=$(VERSION)"
+GOFLAGS := -ldflags "-X github.com/MichaelDarr/docker-config/internal.CmdName=$(BIN)\
+					 -X github.com/MichaelDarr/docker-config/internal.Version=$(VERSION)"
 
 .PHONY: default
 default: $(BIN)
