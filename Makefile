@@ -21,6 +21,10 @@ build: $(BIN)
 $(BIN): ## build
 	$(GO) build $(GOFLAGS) -ldflags '-s -w $(LDFLAGS)' $(EXTRA_GOFLAGS) -o $@
 
+.PHONY: test
+test:
+	$(GO) test github.com/MichaelDarr/ahab/internal
+
 .PHONY: install
 install:
 	install -Dm755 ${BIN} $(DESTDIR)$(PREFIX)/bin/${BIN}
