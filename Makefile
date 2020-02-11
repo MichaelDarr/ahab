@@ -8,6 +8,7 @@ GO ?= go
 PREFIX := /usr/local
 VERSION = $(shell cat VERSION)
 
+EXTRA_GOFLAGS ?=
 LDFLAGS := $(LDFLAGS) -X "github.com/MichaelDarr/ahab/internal.Version=$(VERSION)"
 
 .PHONY: default
@@ -18,7 +19,7 @@ build: $(BIN)
 
 .PHONY: $(BIN)
 $(BIN): ## build
-	$(GO) build $(GOFLAGS) -ldflags '-s -w $(LDFLAGS)' -o $@
+	$(GO) build $(GOFLAGS) -ldflags '-s -w $(LDFLAGS)' $(EXTRA_GOFLAGS) -o $@
 
 .PHONY: install
 install:
