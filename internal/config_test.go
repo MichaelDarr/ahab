@@ -4,7 +4,9 @@ import (
 	"testing"
 )
 
-var configMinl = Configuration{
+const configPath = "/home/user/test/ahab.json"
+
+var configMin = Configuration{
 	AhabVersion:       "0.1",
 	Environment:       []string{},
 	Hostname:          "",
@@ -41,8 +43,35 @@ var configMax = Configuration{
 }
 
 func TestContainerPathName(t *testing.T) {
-	name := ContainerPathName("/home/user/test/ahab.json")
+	name := ContainerPathName(configPath)
 	expectStrEq("home_user_test", name, t)
+}
+
+func TestContainerName(t *testing.T) {
+	name := ContainerName(&configMin, configPath)
+	expectStrEq("home_user_test", name, t)
+
+	name = ContainerName(&configMax, configPath)
+	expectStrEq("myname", name, t)
+}
+
+func TestCheckConfigVersion(t *testing.T) {
+	Version = "2.0"
+
+	// version older, no error expected
+	if err := checkConfigVersion("0.0.1"); err != nil {
+		t.Errorf("Expected version error checking ahab version '%s' against test version '0.0.1'", Version)
+	}
+
+	// version same, no error expected
+	if err := checkConfigVersion("2"); err != nil {
+		t.Errorf("Expected version error checking ahab version '%s' against test version '2'", Version)
+	}
+
+	// version newer, error expected
+	if err := checkConfigVersion("3.2"); err == nil {
+		t.Errorf("Unexpected version error checking ahab version '%s' against test version '3.2'", Version)
+	}
 }
 
 func expectStrEq(expected string, actual string, t *testing.T) {
