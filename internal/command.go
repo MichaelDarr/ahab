@@ -211,14 +211,18 @@ func PrepContainer(config *Configuration, configPath string) error {
 	// create non-root user
 	uid := strconv.Itoa(os.Getuid())
 	homeDir := "/home/" + ContainerUserName
-	useraddCmd := []string{"exec", "-u", "root", ContainerName(config, configPath), "useradd", "-u", uid, "-G", "sudo", "-d", homeDir, "-o", ContainerUserName}
-	if err := DockerCmd(&useraddCmd); err != nil {
+	userAddCmd := []string{"exec", "-u", "root", ContainerName(config, configPath), "useradd", "-o", "-u", uid, "-G", "sudo", "-d", homeDir, ContainerUserName}
+	if err := DockerCmd(&userAddCmd); err != nil {
 		return err
 	}
 
-	// ensure ownership of user's home directory
-	userHomeCmd := []string{"exec", "-u", "root", ContainerName(config, configPath), "chown", uid, homeDir}
-	return DockerCmd(&userHomeCmd)
+	// fix permissions on user home dir; they are incorrect if volumes are mounted there before user creation
+	homeChownCmd := []string{"exec", "-u", "root", ContainerName(config, configPath), "chown", ContainerUserName + ":", homeDir}
+	if err := DockerCmd(&homeChownCmd); err != nil {
+		return err
+	}
+	homeChmodCmd := []string{"exec", "-u", "root", ContainerName(config, configPath), "chmod", "700", homeDir}
+	return DockerCmd(&homeChmodCmd)
 }
 
 // RemoveContainer removes an environment if it exists but is not running

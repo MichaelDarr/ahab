@@ -3,11 +3,12 @@
 #
 
 BIN := ahab
-ENTRYPOINT := ahab.go
+DESTDIR :=
 GO ?= go
+PREFIX := /usr/local
 VERSION = $(shell cat VERSION)
 
-GOFLAGS := -ldflags "-X github.com/MichaelDarr/ahab/internal.Version=$(VERSION)"
+LDFLAGS := $(LDFLAGS) -X "github.com/MichaelDarr/ahab/internal.Version=$(VERSION)"
 
 .PHONY: default
 default: $(BIN)
@@ -17,8 +18,12 @@ build: $(BIN)
 
 .PHONY: $(BIN)
 $(BIN): ## build
-	$(GO) build $(GOFLAGS) $(ENTRYPOINT)
+	$(GO) build $(GOFLAGS) -ldflags '-s -w $(LDFLAGS)' -o $@
 
-.PHONY: run
-run: ## build and run
-	$(GO) run $(GOFLAGS) $(ENTRYPOINT)
+.PHONY: install
+install:
+	install -Dm755 ${BIN} $(DESTDIR)$(PREFIX)/bin/${BIN}
+
+.PHONY: uninstall
+uninstall:
+	rm -f $(DESTDIR)$(PREFIX)/bin/${BIN}
