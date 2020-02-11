@@ -1,4 +1,4 @@
-module github.com/MichaelDarr/docker-config
+module github.com/MichaelDarr/ahab
 
 go 1.13
 

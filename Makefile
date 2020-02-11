@@ -1,13 +1,14 @@
 #
-# github.com/MichaelDarr/docker-config
+# github.com/MichaelDarr/ahab
 #
 
-BIN := dcon
+BIN := ahab
+ENTRYPOINT := ahab.go
 GO ?= go
 VERSION = $(shell cat VERSION)
 
-GOFLAGS := -ldflags "-X github.com/MichaelDarr/docker-config/internal.CmdName=$(BIN)\
-					 -X github.com/MichaelDarr/docker-config/internal.Version=$(VERSION)"
+GOFLAGS := -ldflags "-X github.com/MichaelDarr/ahab/internal.CmdName=$(BIN)\
+					 -X github.com/MichaelDarr/ahab/internal.Version=$(VERSION)"
 
 .PHONY: default
 default: $(BIN)
@@ -16,9 +17,9 @@ default: $(BIN)
 build: $(BIN)
 
 .PHONY: $(BIN)
-$(BIN): ## build docker-config as dcon
-	$(GO) build $(GOFLAGS) -o $(BIN) main.go
+$(BIN): ## build
+	$(GO) build $(GOFLAGS) $(ENTRYPOINT)
 
 .PHONY: run
-run: ## build and run docker-config
-	$(GO) run $(GOFLAGS) main.go
+run: ## build and run
+	$(GO) run $(GOFLAGS) $(ENTRYPOINT)

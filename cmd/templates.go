@@ -3,7 +3,7 @@ package cmd
 import (
 	"github.com/spf13/cobra"
 
-	"github.com/MichaelDarr/docker-config/internal"
+	"github.com/MichaelDarr/ahab/internal"
 )
 
 // BasicCommand constructs and returns a Docker container command which doesn not take extra options

@@ -3,7 +3,7 @@ package cmd
 import (
 	"github.com/spf13/cobra"
 
-	"github.com/MichaelDarr/docker-config/internal"
+	"github.com/MichaelDarr/ahab/internal"
 )
 
 var downCmd = &cobra.Command{
