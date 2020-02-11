@@ -1,8 +1,6 @@
 package internal
 
-import (
-	"testing"
-)
+import "testing"
 
 const configPath = "/home/user/test/ahab.json"
 
@@ -44,7 +42,7 @@ func TestContainerName(t *testing.T) {
 	expectStrEq("home_user_test", name, t)
 
 	name = ContainerName(&configMax, configPath)
-	expectStrEq("myname", name, t)
+	expectStrEq(configMax.Name, name, t)
 }
 
 func TestCheckConfigVersion(t *testing.T) {
