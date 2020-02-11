@@ -4,8 +4,11 @@ Dockerize your project, git style
 ## Compile from source
 
 ### Build ahab *with* ahab
-Naturally, ahab itself has an ahab configuration file! If you have Docker and `ahab` installed, you
-can build ahab like so:
+Naturally, ahab itself can be built within an ahab-configured container!
+
+**Prerequisites**
+* Docker
+* ahab
 
 ```sh
 $ git clone git@github.com:MichaelDarr/ahab.git
