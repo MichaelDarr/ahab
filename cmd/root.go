@@ -19,9 +19,6 @@ func Execute() {
 	rootCmd.Execute()
 }
 
-// verbose is used as a flag for various commands
-var verbose bool
-
 // Docker commands that don't take options
 var diffCmd = BasicCommand("diff", "Inspect changes to files or directories on container filesystem")
 var pauseCmd = BasicCommand("pause", "Pause all processes within container")
@@ -80,8 +77,7 @@ func BasicCommand(command string, description string) cobra.Command {
 		Long: description + `
 
 Docker Command:
-  docker ` + command + ` [CONFIG_OPTIONS]
-	`,
+  docker ` + command + ` CONTAINER`,
 		Run: func(cmd *cobra.Command, args []string) {
 			config, configPath, err := internal.ProjectConfig()
 			internal.PrintErrFatal(err)

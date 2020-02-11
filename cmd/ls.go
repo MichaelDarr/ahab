@@ -6,6 +6,9 @@ import (
 	"github.com/MichaelDarr/ahab/internal"
 )
 
+// verbose is used as a flag by several ls commands
+var verbose bool
+
 var lsCmd = &cobra.Command{
 	Use:   "ls",
 	Short: "List containers, images, and volumes",
@@ -14,8 +17,7 @@ var lsCmd = &cobra.Command{
 Docker Commands:
   docker ps -a [FORMATTING FLAGS]
   docker images [FORMATTING FLAGS]
-  docker volume ls
-`,
+  docker volume ls`,
 	Run: func(cmd *cobra.Command, args []string) {
 		err := internal.ListContainers(verbose)
 		internal.PrintErrFatal(err)
@@ -32,8 +34,7 @@ var lscCmd = &cobra.Command{
 	Long: `List containers
 
 Docker Command:
-  docker ps -a [FORMATTING FLAGS]
-`,
+  docker ps -a [FORMATTING FLAGS]`,
 	Run: func(cmd *cobra.Command, args []string) {
 		err := internal.ListContainers(verbose)
 		internal.PrintErrFatal(err)
@@ -46,8 +47,7 @@ var lsiCmd = &cobra.Command{
 	Long: `List images
 
 Docker Command:
-  docker images [FORMATTING FLAGS]
-`,
+  docker images [FORMATTING FLAGS]`,
 	Run: func(cmd *cobra.Command, args []string) {
 		err := internal.ListImages(verbose)
 		internal.PrintErrFatal(err)
@@ -60,8 +60,7 @@ var lsvCmd = &cobra.Command{
 	Long: `List volumes
 
 Docker Command:
-  docker volume ls
-`,
+  docker volume ls`,
 	Run: func(cmd *cobra.Command, args []string) {
 		err := internal.ListVolumes()
 		internal.PrintErrFatal(err)

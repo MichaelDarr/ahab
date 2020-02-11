@@ -9,10 +9,6 @@ import (
 var upCmd = &cobra.Command{
 	Use:   "up",
 	Short: "Create and start container",
-	Long: `Create and start container
-
-Docker Command:
-  varies based on current container state`,
 	Run: func(cmd *cobra.Command, args []string) {
 		config, configPath, err := internal.ProjectConfig()
 		internal.PrintErrFatal(err)

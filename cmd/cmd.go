@@ -13,10 +13,10 @@ var cmdCmd = &cobra.Command{
 		helpRequested, err := internal.PrintDockerHelp(&args, "exec", `Execute an attatched command in a container
 
 Docker Command:
-  docker exec -it CONTAINER COMMAND [ARG...]
+  docker exec -it CONTAINER COMMAND [OPTIONS]
 
 Usage:
-  ahab cmd [-h/--help] COMMAND [ARG...]
+  ahab cmd [-h/--help] COMMAND [OPTIONS]
 `)
 		internal.PrintErrFatal(err)
 		if helpRequested {

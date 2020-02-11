@@ -6,6 +6,7 @@ import (
 	"github.com/MichaelDarr/ahab/internal"
 )
 
+// volumes is used as a flag by the prune command
 var volumes bool
 
 var pruneCmd = &cobra.Command{
