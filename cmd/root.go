@@ -13,8 +13,8 @@ func Execute() {
 
 // rootCmd is the base command which all others are added to
 var rootCmd = &cobra.Command{
-	Use:     internal.CmdName,
-	Short:   internal.CmdName + " is a Docker configuration tool",
+	Use:     "ahab",
+	Short:   "ahab is a Docker configuration tool",
 	Long:    "Configure, launch, and work in Dockerized environments",
 	Version: internal.Version,
 }

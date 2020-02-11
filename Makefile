@@ -7,8 +7,7 @@ ENTRYPOINT := ahab.go
 GO ?= go
 VERSION = $(shell cat VERSION)
 
-GOFLAGS := -ldflags "-X github.com/MichaelDarr/ahab/internal.CmdName=$(BIN)\
-					 -X github.com/MichaelDarr/ahab/internal.Version=$(VERSION)"
+GOFLAGS := -ldflags "-X github.com/MichaelDarr/ahab/internal.Version=$(VERSION)"
 
 .PHONY: default
 default: $(BIN)

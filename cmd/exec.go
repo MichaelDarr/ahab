@@ -16,7 +16,7 @@ Docker Command:
   docker exec CONTAINER COMMAND [ARG...]
 
 Usage:
-  `+internal.CmdName+` exec [-h/--help] COMMAND [ARG...]
+  ahab exec [-h/--help] COMMAND [ARG...]
 `)
 		internal.PrintErrFatal(err)
 		if helpRequested {

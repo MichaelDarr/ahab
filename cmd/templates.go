@@ -38,7 +38,7 @@ Docker Command:
   docker `+command+` [OPTIONS] CONTAINER
 
 Usage:
-  `+internal.CmdName+` `+command+` [-h/--help] [OPTIONS]
+  ahab `+command+` [-h/--help] [OPTIONS]
 `)
 			internal.PrintErrFatal(err)
 			if helpRequested {

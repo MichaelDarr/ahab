@@ -28,8 +28,14 @@ type UserConfiguration struct {
 	Volumes      []string `json:"volumes"`
 }
 
+// Version is the build-time dcfg version
+var Version string
+
 // configFileName holds the name of the config file
-var configFileName string = CmdName + ".json"
+const configFileName = "ahab.json"
+
+// userConfigFilePath holds the path of the user's config file, relative to their home dir
+const userConfigFilePath = ".config/ahab/config.json"
 
 // ContainerPathName returns a filepath-based container name for a given config file
 func ContainerPathName(configPath string) string {
@@ -91,7 +97,7 @@ func UserConfig() (userConfig *UserConfiguration, err error) {
 		return
 	}
 
-	configPath := filepath.Join(homeDir, ".config/"+CmdName+"/config.json")
+	configPath := filepath.Join(homeDir, userConfigFilePath)
 	configFile, err := os.Open(configPath)
 	if err != nil && os.IsNotExist(err) {
 		var blankConfig UserConfiguration
