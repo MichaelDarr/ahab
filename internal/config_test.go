@@ -7,16 +7,8 @@ import (
 const configPath = "/home/user/test/ahab.json"
 
 var configMin = Configuration{
-	AhabVersion:       "0.1",
-	Environment:       []string{},
-	Hostname:          "",
-	ImageURI:          "ubuntu:18.04",
-	ManualPermissions: false,
-	Name:              "",
-	Options:           []string{},
-	ShareX11:          false,
-	Volumes:           []string{},
-	Workdir:           "",
+	AhabVersion: "0.1",
+	ImageURI:    "ubuntu:18.04",
 }
 
 var configMax = Configuration{
@@ -72,6 +64,25 @@ func TestCheckConfigVersion(t *testing.T) {
 	if err := checkConfigVersion("3.2"); err == nil {
 		t.Errorf("Unexpected version error checking ahab version '%s' against test version '3.2'", Version)
 	}
+}
+
+func TestMissingConfigVars(t *testing.T) {
+	var config = Configuration{ImageURI: "ubuntu:18.04"}
+	missing := missingConfigVars(&config)
+	expectStrEq("ahab", missing, t)
+
+	config = Configuration{AhabVersion: "0.1"}
+	missing = missingConfigVars(&config)
+	expectStrEq("image", missing, t)
+
+	missing = missingConfigVars(&Configuration{})
+	expectStrEq("ahab, image", missing, t)
+
+	missing = missingConfigVars(&configMin)
+	expectStrEq("", missing, t)
+
+	missing = missingConfigVars(&configMax)
+	expectStrEq("", missing, t)
 }
 
 func expectStrEq(expected string, actual string, t *testing.T) {

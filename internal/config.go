@@ -111,13 +111,20 @@ func UserConfig() (userConfig *UserConfiguration, err error) {
 	if err = decoder.Decode(&userConfig); err != nil {
 		err = fmt.Errorf("Failed to parse user config file: %s", err)
 	}
-
 	return
 }
 
 // checkConfigVersion returns a non-nil err if the passed version is newer the active dcfg version
 func checkConfigVersion(configVersion string) error {
-	configVersionOrd, selfVersionOrd := versionOrdinal(configVersion), versionOrdinal(Version)
+	configVersionOrd, err := versionOrdinal(configVersion)
+	if err != nil {
+		return err
+	}
+	selfVersionOrd, err := versionOrdinal(Version)
+	if err != nil {
+		return err
+	}
+
 	if configVersionOrd > selfVersionOrd {
 		return fmt.Errorf("Config file requires dcfg >= %s (your version: %s)", configVersion, Version)
 	}
@@ -142,18 +149,18 @@ func findConfigPath(topDir string) (configPath string, err error) {
 
 // missingConfigVars returns a comma-separated string of missing required config fields
 func missingConfigVars(config *Configuration) (missingVars string) {
-	if config.ImageURI == "" {
-		missingVars = appendToStrList(missingVars, "image")
-	}
 	if config.AhabVersion == "" {
 		missingVars = appendToStrList(missingVars, "ahab")
+	}
+	if config.ImageURI == "" {
+		missingVars = appendToStrList(missingVars, "image")
 	}
 	return
 }
 
 // versionOrdinal standardizes version strings for easy comparison
 // see https://stackoverflow.com/a/18411978
-func versionOrdinal(version string) string {
+func versionOrdinal(version string) (string, error) {
 	// ISO/IEC 14651:2011
 	const maxByte = 1<<8 - 1
 	vo := make([]byte, 0, len(version)+8)
@@ -174,10 +181,10 @@ func versionOrdinal(version string) string {
 			continue
 		}
 		if vo[j]+1 > maxByte {
-			panic("VersionOrdinal: invalid version")
+			return "", fmt.Errorf("versionOrdinal: Invalid version '%s'", version)
 		}
 		vo = append(vo, b)
 		vo[j]++
 	}
-	return string(vo)
+	return string(vo), nil
 }
