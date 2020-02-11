@@ -25,14 +25,15 @@ Usage:
 
 		config, configPath, err := internal.ProjectConfig()
 		internal.PrintErrFatal(err)
+		internal.PrintErrFatal(internal.UpContainer(config, configPath))
 
-		err = internal.UpContainer(config, configPath)
-		internal.PrintErrFatal(err)
-
-		execArgs := []string{"exec", "-it", internal.ContainerName(config, configPath)}
-		execArgs = append(execArgs, args...)
-		err = internal.DockerCmd(&execArgs)
-		internal.PrintErrFatal(err)
+		containerOpts := []string{"exec", "-it"}
+		if !config.ManualPermissions {
+			containerOpts = append(containerOpts, "-u", internal.ContainerUserName)
+		}
+		containerOpts = append(containerOpts, internal.ContainerName(config, configPath))
+		containerOpts = append(containerOpts, args...)
+		internal.PrintErrFatal(internal.DockerCmd(&containerOpts))
 	},
 	Args:               cobra.ArbitraryArgs,
 	DisableFlagParsing: true,

@@ -86,8 +86,7 @@ func appendToStrList(list string, newEl string) (finalStr string) {
 
 // stylize surrounds a string with style codes
 func stylize(style string, str string) string {
-	textCode, ok := textCodes[style]
-	if ok {
+	if textCode, ok := textCodes[style]; ok {
 		return textCode + str + textCodes["reset"]
 	}
 	PrintWarning("Unsupported text style: " + style)

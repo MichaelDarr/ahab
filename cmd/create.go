@@ -17,11 +17,7 @@ Docker Command:
 		config, configPath, err := internal.ProjectConfig()
 		internal.PrintErrFatal(err)
 
-		launchOpts, err := internal.LaunchOpts(config, configPath)
-		internal.PrintErrFatal(err)
-
-		launchOpts = append([]string{"create", "-t"}, launchOpts...)
-		err = internal.DockerCmd(&launchOpts)
+		err = internal.CreateContainer(config, configPath, false)
 		internal.PrintErrFatal(err)
 	},
 }

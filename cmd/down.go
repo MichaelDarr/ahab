@@ -12,12 +12,8 @@ var downCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		config, configPath, err := internal.ProjectConfig()
 		internal.PrintErrFatal(err)
-
-		err = internal.StopContainer(config, configPath)
-		internal.PrintErrFatal(err)
-
-		err = internal.RemoveContainer(config, configPath)
-		internal.PrintErrFatal(err)
+		internal.PrintErrFatal(internal.StopContainer(config, configPath))
+		internal.PrintErrFatal(internal.RemoveContainer(config, configPath))
 	},
 }
 

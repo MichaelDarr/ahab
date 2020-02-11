@@ -7,8 +7,12 @@ import (
 	"os/exec"
 	"path"
 	"path/filepath"
+	"strconv"
 	"strings"
 )
+
+// ContainerUserName is the username of the user created in the container
+const ContainerUserName = "ahab"
 
 // ContainerProp returns a property of a config's container, or an empty string if it is not created
 func ContainerProp(config *Configuration, configPath string, fieldID string) (string, error) {
@@ -75,13 +79,8 @@ func DockerCmd(opts *[]string) error {
 }
 
 // DockerContainerCmd runs a docker command on the active config's container
-// opts is sequence of strings here because these commands are usually set statically in code
-func DockerContainerCmd(config *Configuration, configPath string, cmd string, opts *[]string) error {
-	containerOpts := []string{cmd}
-	if opts != nil {
-		containerOpts = append(containerOpts, *opts...)
-	}
-	containerOpts = append(containerOpts, ContainerName(config, configPath))
+func DockerContainerCmd(config *Configuration, configPath string, cmd string) error {
+	containerOpts := append([]string{cmd}, ContainerName(config, configPath))
 	return DockerCmd(&containerOpts)
 }
 
@@ -102,8 +101,11 @@ func DockerXHostAuth() error {
 func LaunchOpts(config *Configuration, configPath string) (opts []string, err error) {
 	userConfig, err := UserConfig()
 
+	// initial (idle) process runs as root user
+	opts = []string{"-u", "root"}
+
 	// user-specified options
-	opts = expandEnvs(&config.Options)
+	opts = append(opts, expandEnvs(&config.Options)...)
 	opts = append(opts, expandEnvs(&userConfig.Options)...)
 
 	// environment
@@ -132,6 +134,13 @@ func LaunchOpts(config *Configuration, configPath string) (opts []string, err er
 	// workdir
 	if config.Workdir != "" {
 		opts = append(opts, "-w", os.ExpandEnv(config.Workdir))
+	}
+
+	// hostname
+	if config.Hostname != "" {
+		opts = append(opts, "-h", config.Hostname)
+	} else {
+		opts = append(opts, "-h", filepath.Base(filepath.Dir(configPath))) // name of parent dir of the config file
 	}
 
 	// xhost sharing
@@ -168,43 +177,81 @@ func ListVolumes() error {
 	return DockerCmd(&execArgs)
 }
 
-// RemoveContainer removes an environment if it exists but is not running
-func RemoveContainer(config *Configuration, configPath string) (err error) {
-	status, err := ContainerStatus(config, configPath)
-	PrintErrFatal(err)
-	if status == 1 || status == 6 || status == 7 {
-		err = DockerContainerCmd(config, configPath, "rm", nil)
+// CreateContainer creates an container for the config
+func CreateContainer(config *Configuration, configPath string, startContainer bool) error {
+	launchOpts, err := LaunchOpts(config, configPath)
+	if err != nil {
+		return err
 	}
-	return
+
+	launchOpts = append([]string{"create", "-t"}, launchOpts...)
+	launchOpts = append(launchOpts, "top", "-b")
+	if err = DockerCmd(&launchOpts); err != nil {
+		return err
+	}
+
+	if !config.ManualPermissions {
+		if err = DockerContainerCmd(config, configPath, "start"); err != nil {
+			return err
+		}
+		if err = PrepContainer(config, configPath); err != nil {
+			return err
+		}
+		if !startContainer {
+			return DockerContainerCmd(config, configPath, "stop")
+		}
+	} else if startContainer {
+		return DockerContainerCmd(config, configPath, "start")
+	}
+	return nil
+}
+
+// PrepContainer executes docker functions to prepare a non-root user in the container
+func PrepContainer(config *Configuration, configPath string) error {
+	// create non-root user
+	uid := strconv.Itoa(os.Getuid())
+	homeDir := "/home/" + ContainerUserName
+	useraddCmd := []string{"exec", "-u", "root", ContainerName(config, configPath), "useradd", "-u", uid, "-G", "sudo", "-d", homeDir, "-o", ContainerUserName}
+	if err := DockerCmd(&useraddCmd); err != nil {
+		return err
+	}
+
+	// ensure ownership of user's home directory
+	userHomeCmd := []string{"exec", "-u", "root", ContainerName(config, configPath), "chown", uid, homeDir}
+	return DockerCmd(&userHomeCmd)
+}
+
+// RemoveContainer removes an environment if it exists but is not running
+func RemoveContainer(config *Configuration, configPath string) error {
+	status, err := ContainerStatus(config, configPath)
+	if err == nil && (status == 1 || status == 6 || status == 7) {
+		return DockerContainerCmd(config, configPath, "rm")
+	}
+	return err
 }
 
 // StopContainer stops an environment if it is running
-func StopContainer(config *Configuration, configPath string) (err error) {
+func StopContainer(config *Configuration, configPath string) error {
 	status, err := ContainerStatus(config, configPath)
-	PrintErrFatal(err)
-	if status == 2 || status == 3 || status == 5 {
-		err = DockerContainerCmd(config, configPath, "stop", nil)
+	if err == nil && (status == 2 || status == 3 || status == 5) {
+		return DockerContainerCmd(config, configPath, "stop")
 	}
-	return
+	return err
 }
 
 // UpContainer creates and starts an environment
-func UpContainer(config *Configuration, configPath string) (err error) {
+func UpContainer(config *Configuration, configPath string) error {
 	status, err := ContainerStatus(config, configPath)
-	PrintErrFatal(err)
-	if status == 0 {
-		launchOpts, err := LaunchOpts(config, configPath)
-		if err != nil {
-			return err
-		}
-		launchOpts = append([]string{"run", "-td"}, launchOpts...)
-		err = DockerCmd(&launchOpts)
+	if err != nil {
+		return err
+	} else if status == 0 {
+		return CreateContainer(config, configPath, true)
 	} else if status == 1 || status == 6 || status == 7 {
-		err = DockerContainerCmd(config, configPath, "start", nil)
+		return DockerContainerCmd(config, configPath, "start")
 	} else if status == 5 {
-		err = DockerContainerCmd(config, configPath, "unpause", nil)
+		return DockerContainerCmd(config, configPath, "unpause")
 	}
-	return
+	return nil
 }
 
 // expandConfEnv expands environment variables present in a slice of strings

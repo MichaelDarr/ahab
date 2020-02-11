@@ -21,8 +21,7 @@ Docker Command:
 		if volumes {
 			pruneArgs = append(pruneArgs, "--volumes")
 		}
-		err := internal.DockerCmd(&pruneArgs)
-		internal.PrintErrFatal(err)
+		internal.PrintErrFatal(internal.DockerCmd(&pruneArgs))
 	},
 }
 

@@ -13,7 +13,7 @@ var execCmd = &cobra.Command{
 		helpRequested, err := internal.PrintDockerHelp(&args, "exec", `Run a command in a container
 
 Docker Command:
-  docker exec CONTAINER COMMAND [ARG...]
+  docker exec [-u ahab] CONTAINER COMMAND [ARG...]
 
 Usage:
   ahab exec [-h/--help] COMMAND [ARG...]
@@ -25,12 +25,15 @@ Usage:
 
 		config, configPath, err := internal.ProjectConfig()
 		internal.PrintErrFatal(err)
+		internal.PrintErrFatal(internal.UpContainer(config, configPath))
 
-		err = internal.UpContainer(config, configPath)
-		internal.PrintErrFatal(err)
-
-		err = internal.DockerContainerCmd(config, configPath, "exec", &args)
-		internal.PrintErrFatal(err)
+		containerOpts := []string{"exec"}
+		if !config.ManualPermissions {
+			containerOpts = append(containerOpts, "-u", internal.ContainerUserName)
+		}
+		containerOpts = append(containerOpts, internal.ContainerName(config, configPath))
+		containerOpts = append(containerOpts, args...)
+		internal.PrintErrFatal(internal.DockerCmd(&containerOpts))
 	},
 	Args:               cobra.ArbitraryArgs,
 	DisableFlagParsing: true,

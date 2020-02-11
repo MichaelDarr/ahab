@@ -6,6 +6,10 @@ import (
 	"github.com/MichaelDarr/ahab/internal"
 )
 
+// flags used across the cli
+var asRoot bool
+var verbose bool
+
 // rootCmd is the base command which all others are added to
 var rootCmd = &cobra.Command{
 	Use:     "ahab",
@@ -81,9 +85,7 @@ Docker Command:
 		Run: func(cmd *cobra.Command, args []string) {
 			config, configPath, err := internal.ProjectConfig()
 			internal.PrintErrFatal(err)
-
-			err = internal.DockerContainerCmd(config, configPath, command, nil)
-			internal.PrintErrFatal(err)
+			internal.PrintErrFatal(internal.DockerContainerCmd(config, configPath, command))
 		},
 	}
 }
@@ -109,8 +111,9 @@ Usage:
 			config, configPath, err := internal.ProjectConfig()
 			internal.PrintErrFatal(err)
 
-			err = internal.DockerContainerCmd(config, configPath, command, &args)
-			internal.PrintErrFatal(err)
+			containerOpts := append([]string{command}, args...)
+			containerOpts = append(containerOpts, internal.ContainerName(config, configPath))
+			internal.PrintErrFatal(internal.DockerCmd(&containerOpts))
 		},
 		Args:               cobra.ArbitraryArgs,
 		DisableFlagParsing: true,
@@ -118,8 +121,8 @@ Usage:
 }
 
 // ShellCommand constructs and returns a Docker container command to attach a shell to the active terminal
-func ShellCommand(shellCommand string, description string) cobra.Command {
-	return cobra.Command{
+func ShellCommand(shellCommand string, description string) (cmd cobra.Command) {
+	cmd = cobra.Command{
 		Use:   shellCommand,
 		Short: "Open a containerized " + description + " shell",
 		Long: `Attach a containerized ` + description + ` shell to the active terminal.
@@ -127,18 +130,24 @@ func ShellCommand(shellCommand string, description string) cobra.Command {
 *Warning!* the ` + description + ` shell must be installed in your image for this command to function!
 
 Docker Command:
-  docker exec -it CONTAINER ` + shellCommand,
+  docker exec -it [-u ` + internal.ContainerUserName + `] CONTAINER ` + shellCommand,
 		Args: cobra.NoArgs,
 		Run: func(cmd *cobra.Command, args []string) {
 			config, configPath, err := internal.ProjectConfig()
 			internal.PrintErrFatal(err)
+			internal.PrintErrFatal(internal.UpContainer(config, configPath))
 
-			err = internal.UpContainer(config, configPath)
-			internal.PrintErrFatal(err)
-
-			execArgs := []string{"exec", "-it", internal.ContainerName(config, configPath), shellCommand}
-			err = internal.DockerCmd(&execArgs)
-			internal.PrintErrFatal(err)
+			execArgs := []string{"exec", "-it"}
+			if asRoot {
+				execArgs = append(execArgs, "-u", "root")
+			} else if !config.ManualPermissions {
+				execArgs = append(execArgs, "-u", internal.ContainerUserName)
+			}
+			execArgs = append(execArgs, internal.ContainerName(config, configPath), shellCommand)
+			internal.PrintErrFatal(internal.DockerCmd(&execArgs))
 		},
 	}
+
+	cmd.Flags().BoolVar(&asRoot, "root", false, "Use "+description+" shell as root")
+	return cmd
 }
