@@ -11,8 +11,8 @@ Docker containers. The Ahab CLI supports all of Docker's container commands with
 manually target your container name or ID.
 
 In addition the official Docker commands, Ahab supports new ones such as `bash`, `up`, and
-`status` - we'll talk more about these and more later. Ahab provides everything you need to
-quickly, easily, and effectively develop a containerized project.
+`status` - we'll talk about these and more later. Ahab provides everything you need to
+quickly and effectively develop a containerized project.
 
 ## Why Ahab?
 
