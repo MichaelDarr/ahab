@@ -1,0 +1,12 @@
+{
+    "ahab": "0.1",
+    "entrypoint": "/home/ahab/src/entrypoint.sh",
+    "image": "docker:19.03",
+    "permissions": {
+        "UserAddCmd": "adduser"
+    },
+    "volumes": [
+        "./:/home/ahab/src"
+    ],
+    "workdir": "/home/ahab/src"
+}

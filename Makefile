@@ -26,7 +26,12 @@ $(BIN): ## build
 	$(GO) build $(GOFLAGS) -ldflags '-s -w $(LDFLAGS)' $(EXTRA_GOFLAGS) -o $@
 
 .PHONY: test
-test:
+containertest: ## use ahab to test itself
+	cd test
+	$(BIN) cmd make containertest
+
+.PHONY: containertest
+containertest: ## must be run inside container set up for test suite
 	$(GO) test github.com/MichaelDarr/ahab/internal
 
 .PHONY: install

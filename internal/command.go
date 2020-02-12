@@ -199,7 +199,7 @@ func CreateContainer(config *Configuration, configPath string, startContainer bo
 		return err
 	}
 
-	if !config.ManualPermissions {
+	if !config.Permissions.Disable {
 		if err = DockerContainerCmd(config, configPath, "start"); err != nil {
 			return err
 		}
@@ -220,7 +220,21 @@ func PrepContainer(config *Configuration, configPath string) error {
 	// create non-root user
 	uid := strconv.Itoa(os.Getuid())
 	homeDir := "/home/" + ContainerUserName
-	userAddCmd := []string{"exec", "-u", "root", ContainerName(config, configPath), "useradd", "-o", "-u", uid, "-G", "sudo", "-d", homeDir, ContainerUserName}
+	userAddCmd := []string{"exec", "-u", "root", ContainerName(config, configPath)}
+	switch config.Permissions.UserAddCmd {
+	case "", "useradd":
+		userAddCmd = append(userAddCmd, []string{"useradd", "-o", "-d", homeDir}...)
+	case "adduser":
+		userAddCmd = append(userAddCmd, []string{"adduser", "-D", "-h", homeDir}...)
+	default:
+		return fmt.Errorf("Unsupported add user command specified in config: %s", config.Permissions.UserAddCmd)
+	}
+
+	if config.Permissions.Sudoer {
+		userAddCmd = append(userAddCmd, []string{"-G", "sudo"}...)
+	}
+
+	userAddCmd = append(userAddCmd, []string{"-u", uid, ContainerUserName}...)
 	if err := DockerCmd(&userAddCmd); err != nil {
 		return err
 	}

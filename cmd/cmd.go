@@ -28,7 +28,7 @@ Usage:
 		internal.PrintErrFatal(internal.UpContainer(config, configPath))
 
 		containerOpts := []string{"exec", "-it"}
-		if !config.ManualPermissions {
+		if !config.Permissions.Disable {
 			containerOpts = append(containerOpts, "-u", internal.ContainerUserName)
 		}
 		containerOpts = append(containerOpts, internal.ContainerName(config, configPath))

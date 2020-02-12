@@ -8,19 +8,26 @@ import (
 	"strings"
 )
 
-// Configuration contains all docker config fields
+// Configuration contains docker config fields
 type Configuration struct {
-	AhabVersion       string   `json:"ahab"`
-	Entrypoint        string   `json:"entrypoint"`
-	Environment       []string `json:"environment"`
-	Hostname          string   `json:"hostname"`
-	ImageURI          string   `json:"image"`
-	ManualPermissions bool     `json:"manualPermissions"`
-	Name              string   `json:"name"`
-	Options           []string `json:"options"`
-	ShareX11          bool     `json:"shareX11"`
-	Volumes           []string `json:"volumes"`
-	Workdir           string   `json:"workdir"`
+	AhabVersion string            `json:"ahab"`
+	Entrypoint  string            `json:"entrypoint"`
+	Environment []string          `json:"environment"`
+	Hostname    string            `json:"hostname"`
+	ImageURI    string            `json:"image"`
+	Permissions PermConfiguration `json:"permissions"`
+	Name        string            `json:"name"`
+	Options     []string          `json:"options"`
+	ShareX11    bool              `json:"shareX11"`
+	Volumes     []string          `json:"volumes"`
+	Workdir     string            `json:"workdir"`
+}
+
+// PermConfiguration contains information regarding container user permissions setup
+type PermConfiguration struct {
+	Disable    bool   `json:"disable"`
+	UserAddCmd string `json:"userAddCmd"`
+	Sudoer     bool   `json:"sudoer"`
 }
 
 // UserConfiguration contains global user config fields

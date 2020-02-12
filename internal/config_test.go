@@ -15,10 +15,9 @@ var configMax = Configuration{
 		"SOME=$THINGONE",
 		"$OTHER=THINGTWO",
 	},
-	Hostname:          "myhost",
-	ImageURI:          "ubuntu:18.04",
-	ManualPermissions: true,
-	Name:              "myname",
+	Hostname: "myhost",
+	ImageURI: "ubuntu:18.04",
+	Name:     "myname",
 	Options: []string{
 		"--gpus",
 		"$ALL",
