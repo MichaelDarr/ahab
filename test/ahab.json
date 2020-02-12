@@ -12,9 +12,9 @@
         "cmdSet": "busybox",
         "groups": [
             "!docker"
-        ],
-        "restartAfterSetup": true
+        ]
     },
+    "restartAfterSetup": true,
     "volumes": [
         "../:/home/ahab/src",
         "./mnt:/mnt",

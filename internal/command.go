@@ -226,9 +226,9 @@ func CreateContainer(config *Configuration, configPath string, startContainer bo
 	}
 
 	// optionally stop/restart initial process after setup
-	if !startContainer {
+	if s, _ := ContainerStatus(config, configPath); !startContainer && s == 3 {
 		return DockerContainerCmd(config, configPath, "stop")
-	} else if config.Permissions.RestartAfterSetup {
+	} else if config.RestartAfterSetup {
 		return DockerContainerCmd(config, configPath, "restart")
 	}
 
