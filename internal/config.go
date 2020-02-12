@@ -16,6 +16,7 @@ type Configuration struct {
 	Environment []string          `json:"environment"`
 	Hostname    string            `json:"hostname"`
 	ImageURI    string            `json:"image"`
+	Init        []string          `json:"init"`
 	Name        string            `json:"name"`
 	Options     []string          `json:"options"`
 	Permissions PermConfiguration `json:"permissions"`

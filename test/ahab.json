@@ -2,6 +2,9 @@
     "ahab": "0.1",
     "command": "dockerd",
     "image": "docker:19.03-dind",
+    "init": [
+        "apk add go"
+    ],
     "options": [
         "--privileged"
     ],

@@ -203,6 +203,7 @@ func CreateContainer(config *Configuration, configPath string, startContainer bo
 		return err
 	}
 
+	// set up user permissions and start container
 	if !config.Permissions.Disable {
 		if err = DockerContainerCmd(config, configPath, "start"); err != nil {
 			return err
@@ -210,12 +211,27 @@ func CreateContainer(config *Configuration, configPath string, startContainer bo
 		if err = PrepContainer(config, configPath); err != nil {
 			return err
 		}
-		if !startContainer {
-			return DockerContainerCmd(config, configPath, "stop")
+	} else if startContainer || len(config.Init) > 0 {
+		if err := DockerContainerCmd(config, configPath, "start"); err != nil {
+			return err
 		}
-	} else if startContainer {
-		return DockerContainerCmd(config, configPath, "start")
 	}
+
+	// execute init commands - if there are any, the container will have been started above
+	for _, initCmd := range config.Init {
+		initCmdSplit := rootExec(config, configPath, strings.Split(initCmd, " ")...)
+		if err := DockerCmd(&initCmdSplit); err != nil {
+			return nil
+		}
+	}
+
+	// optionally stop/restart initial process after setup
+	if !startContainer {
+		return DockerContainerCmd(config, configPath, "stop")
+	} else if config.Permissions.RestartAfterSetup {
+		return DockerContainerCmd(config, configPath, "restart")
+	}
+
 	return nil
 }
 
@@ -266,11 +282,6 @@ func PrepContainer(config *Configuration, configPath string) error {
 		if err := DockerCmd(&userCmd); err != nil {
 			return err
 		}
-	}
-
-	// optionally restart initial process after permissions setup
-	if config.Permissions.RestartAfterSetup {
-		return DockerContainerCmd(config, configPath, "restart")
 	}
 	return nil
 }
