@@ -194,7 +194,11 @@ func CreateContainer(config *Configuration, configPath string, startContainer bo
 	}
 
 	launchOpts = append([]string{"create", "-t"}, launchOpts...)
-	launchOpts = append(launchOpts, "top", "-b")
+	if config.Command != "" {
+		launchOpts = append(launchOpts, config.Command)
+	} else {
+		launchOpts = append(launchOpts, "top", "-b")
+	}
 	if err = DockerCmd(&launchOpts); err != nil {
 		return err
 	}
@@ -221,24 +225,36 @@ func PrepContainer(config *Configuration, configPath string) error {
 	uid := strconv.Itoa(os.Getuid())
 
 	// commands which need to be executed after user creation
+	// not using defer because it complicates error throwing
 	extraCmds := [][]string{
 		rootExec(config, configPath, "chown", ContainerUserName+":", homeDir),
 		rootExec(config, configPath, "chmod", "700", homeDir),
 	}
 
+	// split out groups marked as "new" by a prefixed !, create them, and add the user (deferred)
+	groups, newGroups := splitGroups(&config.Permissions.Groups)
+
 	// create non-root user
 	userAddCmd := rootExec(config, configPath)
-	switch config.Permissions.UserAddCmd {
-	case "", "useradd":
+	switch config.Permissions.CmdSet {
+	case "", "default":
 		userAddCmd = append(userAddCmd, []string{"useradd", "-o", "-d", homeDir, "-G"}...)
-		userAddCmd = append(userAddCmd, strings.Join(config.Permissions.Groups, ","))
-	case "adduser":
+		userAddCmd = append(userAddCmd, strings.Join(groups, ","))
+		for _, group := range newGroups {
+			extraCmds = append(extraCmds, rootExec(config, configPath, "groupadd", group))
+			extraCmds = append(extraCmds, rootExec(config, configPath, "usermod", "-G", group, ContainerUserName))
+		}
+	case "busybox":
 		userAddCmd = append(userAddCmd, []string{"adduser", "-D", "-h", homeDir}...)
-		for _, group := range config.Permissions.Groups {
+		for _, group := range newGroups {
+			extraCmds = append(extraCmds, rootExec(config, configPath, "addgroup", group))
+			extraCmds = append(extraCmds, rootExec(config, configPath, "addgroup", ContainerUserName, group))
+		}
+		for _, group := range groups {
 			extraCmds = append(extraCmds, rootExec(config, configPath, "addgroup", ContainerUserName, group))
 		}
 	default:
-		return fmt.Errorf("Unsupported add user command specified in config: %s", config.Permissions.UserAddCmd)
+		return fmt.Errorf("Unsupported command set specified in config: %s", config.Permissions.CmdSet)
 	}
 	userAddCmd = append(userAddCmd, []string{"-u", uid, ContainerUserName}...)
 	if err := DockerCmd(&userAddCmd); err != nil {
@@ -250,6 +266,11 @@ func PrepContainer(config *Configuration, configPath string) error {
 		if err := DockerCmd(&userCmd); err != nil {
 			return err
 		}
+	}
+
+	// optionally restart initial process after permissions setup
+	if config.Permissions.RestartAfterSetup {
+		return DockerContainerCmd(config, configPath, "restart")
 	}
 	return nil
 }
@@ -317,4 +338,16 @@ func prepVolumeString(rawVolume string, configPath string) (string, error) {
 // rootExec transforms a command into a DockerCmd-ready root-executed command
 func rootExec(config *Configuration, configPath string, args ...string) []string {
 	return append([]string{"exec", "-u", "root", ContainerName(config, configPath)}, args...)
+}
+
+// some groups are prefixed with ! - these are "new groups". splitGroups divides these out and removes the prefix
+func splitGroups(allGroups *[]string) (groups []string, newGroups []string) {
+	for _, group := range *allGroups {
+		if strings.HasPrefix(group, "!") {
+			newGroups = append(newGroups, strings.TrimLeft(group, "!"))
+		} else {
+			groups = append(groups, group)
+		}
+	}
+	return
 }

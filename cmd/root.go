@@ -140,6 +140,8 @@ Docker Command:
 			execArgs := []string{"exec", "-it"}
 			if asRoot {
 				execArgs = append(execArgs, "-u", "root")
+			} else if config.User != "" {
+				execArgs = append(execArgs, "-u", config.User)
 			} else if !config.Permissions.Disable {
 				execArgs = append(execArgs, "-u", internal.ContainerUserName)
 			}

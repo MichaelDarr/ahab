@@ -1,0 +1,1 @@
+# test case: dir has ahab.json

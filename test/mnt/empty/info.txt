@@ -1,0 +1,1 @@
+# test case: dir & its parents have no ahab.json

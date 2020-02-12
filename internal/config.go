@@ -11,23 +11,26 @@ import (
 // Configuration contains docker config fields
 type Configuration struct {
 	AhabVersion string            `json:"ahab"`
+	Command     string            `json:"command"`
 	Entrypoint  string            `json:"entrypoint"`
 	Environment []string          `json:"environment"`
 	Hostname    string            `json:"hostname"`
 	ImageURI    string            `json:"image"`
-	Permissions PermConfiguration `json:"permissions"`
 	Name        string            `json:"name"`
 	Options     []string          `json:"options"`
+	Permissions PermConfiguration `json:"permissions"`
 	ShareX11    bool              `json:"shareX11"`
+	User        string            `json:"user"`
 	Volumes     []string          `json:"volumes"`
 	Workdir     string            `json:"workdir"`
 }
 
 // PermConfiguration contains information regarding container user permissions setup
 type PermConfiguration struct {
-	Disable    bool     `json:"disable"`
-	Groups     []string `json:"groups"`
-	UserAddCmd string   `json:"userAddCmd"`
+	CmdSet            string   `json:"cmdSet"`
+	Disable           bool     `json:"disable"`
+	Groups            []string `json:"groups"`
+	RestartAfterSetup bool     `json:"restartAfterSetup"`
 }
 
 // UserConfiguration contains global user config fields

@@ -1,15 +1,21 @@
 {
     "ahab": "0.1",
-    "entrypoint": "/home/ahab/src/test/entrypoint.sh",
+    "command": "dockerd",
     "image": "docker:19.03-dind",
     "options": [
         "--privileged"
     ],
     "permissions": {
-        "UserAddCmd": "adduser"
+        "cmdSet": "busybox",
+        "groups": [
+            "!docker"
+        ],
+        "restartAfterSetup": true
     },
     "volumes": [
-        "../:/home/ahab/src"
+        "../:/home/ahab/src",
+        "./mnt:/mnt",
+        "./config.json:/home/ahab/.config/ahab/config.json"
     ],
     "workdir": "/home/ahab/src"
 }
