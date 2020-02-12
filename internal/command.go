@@ -296,16 +296,14 @@ func prepVolumeString(rawVolume string, configPath string) (string, error) {
 	volumeSplit := strings.SplitN(os.ExpandEnv(rawVolume), ":", 2)
 
 	// resolve first (local) path relative to config dir
-	if strings.HasPrefix(volumeSplit[0], ".") {
-		volumeSplit[0] = path.Join(filepath.Dir(configPath), strings.TrimLeft(volumeSplit[0], "."))
-	} else if strings.HasPrefix(volumeSplit[0], "~") {
+	if strings.HasPrefix(volumeSplit[0], "~") {
 		homeDir, err := os.UserHomeDir()
 		if err != nil {
 			return "", err
 		}
 		volumeSplit[0] = path.Join(homeDir, strings.TrimLeft(volumeSplit[0], "~"))
 	} else if !strings.HasPrefix(volumeSplit[0], "/") {
-		volumeSplit[0] = path.Join(filepath.Dir(configPath), volumeSplit[0], "~")
+		volumeSplit[0] = path.Join(filepath.Dir(configPath), volumeSplit[0])
 	}
 	return strings.Join(volumeSplit, ":"), nil
 }
