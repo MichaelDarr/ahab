@@ -186,7 +186,7 @@ func ListVolumes() error {
 	return DockerCmd(&execArgs)
 }
 
-// CreateContainer creates an container for the config
+// CreateContainer creates the container described by a config
 func CreateContainer(config *Configuration, configPath string, startContainer bool) error {
 	launchOpts, err := LaunchOpts(config, configPath)
 	if err != nil {
