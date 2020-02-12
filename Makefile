@@ -26,7 +26,7 @@ $(BIN): ## build
 	$(GO) build $(GOFLAGS) -ldflags '-s -w $(LDFLAGS)' $(EXTRA_GOFLAGS) -o $@
 
 .PHONY: test
-containertest: ## use ahab to test itself
+test: ## use ahab to test itself
 	cd test
 	$(BIN) cmd make containertest
 

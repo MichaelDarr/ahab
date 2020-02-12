@@ -25,9 +25,9 @@ type Configuration struct {
 
 // PermConfiguration contains information regarding container user permissions setup
 type PermConfiguration struct {
-	Disable    bool   `json:"disable"`
-	UserAddCmd string `json:"userAddCmd"`
-	Sudoer     bool   `json:"sudoer"`
+	Disable    bool     `json:"disable"`
+	Groups     []string `json:"groups"`
+	UserAddCmd string   `json:"userAddCmd"`
 }
 
 // UserConfiguration contains global user config fields

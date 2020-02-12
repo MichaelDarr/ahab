@@ -217,35 +217,41 @@ func CreateContainer(config *Configuration, configPath string, startContainer bo
 
 // PrepContainer executes docker functions to prepare a non-root user in the container
 func PrepContainer(config *Configuration, configPath string) error {
-	// create non-root user
-	uid := strconv.Itoa(os.Getuid())
 	homeDir := "/home/" + ContainerUserName
-	userAddCmd := []string{"exec", "-u", "root", ContainerName(config, configPath)}
+	uid := strconv.Itoa(os.Getuid())
+
+	// commands which need to be executed after user creation
+	extraCmds := [][]string{
+		rootExec(config, configPath, "chown", ContainerUserName+":", homeDir),
+		rootExec(config, configPath, "chmod", "700", homeDir),
+	}
+
+	// create non-root user
+	userAddCmd := rootExec(config, configPath)
 	switch config.Permissions.UserAddCmd {
 	case "", "useradd":
-		userAddCmd = append(userAddCmd, []string{"useradd", "-o", "-d", homeDir}...)
+		userAddCmd = append(userAddCmd, []string{"useradd", "-o", "-d", homeDir, "-G"}...)
+		userAddCmd = append(userAddCmd, strings.Join(config.Permissions.Groups, ","))
 	case "adduser":
 		userAddCmd = append(userAddCmd, []string{"adduser", "-D", "-h", homeDir}...)
+		for _, group := range config.Permissions.Groups {
+			extraCmds = append(extraCmds, rootExec(config, configPath, "addgroup", ContainerUserName, group))
+		}
 	default:
 		return fmt.Errorf("Unsupported add user command specified in config: %s", config.Permissions.UserAddCmd)
 	}
-
-	if config.Permissions.Sudoer {
-		userAddCmd = append(userAddCmd, []string{"-G", "sudo"}...)
-	}
-
 	userAddCmd = append(userAddCmd, []string{"-u", uid, ContainerUserName}...)
 	if err := DockerCmd(&userAddCmd); err != nil {
 		return err
 	}
 
-	// fix permissions on user home dir; they are incorrect if volumes are mounted there before user creation
-	homeChownCmd := []string{"exec", "-u", "root", ContainerName(config, configPath), "chown", ContainerUserName + ":", homeDir}
-	if err := DockerCmd(&homeChownCmd); err != nil {
-		return err
+	// run post-user-creation commands
+	for _, userCmd := range extraCmds {
+		if err := DockerCmd(&userCmd); err != nil {
+			return err
+		}
 	}
-	homeChmodCmd := []string{"exec", "-u", "root", ContainerName(config, configPath), "chmod", "700", homeDir}
-	return DockerCmd(&homeChmodCmd)
+	return nil
 }
 
 // RemoveContainer removes an environment if it exists but is not running
@@ -306,4 +312,9 @@ func prepVolumeString(rawVolume string, configPath string) (string, error) {
 		volumeSplit[0] = path.Join(filepath.Dir(configPath), volumeSplit[0])
 	}
 	return strings.Join(volumeSplit, ":"), nil
+}
+
+// rootExec transforms a command into a DockerCmd-ready root-executed command
+func rootExec(config *Configuration, configPath string, args ...string) []string {
+	return append([]string{"exec", "-u", "root", ContainerName(config, configPath)}, args...)
 }
