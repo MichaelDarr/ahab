@@ -131,6 +131,15 @@ func LaunchOpts(config *Configuration, configPath string) (opts []string, err er
 		opts = append(opts, "-v", volString)
 	}
 
+	// entrypoint
+	if config.Entrypoint != "" {
+		entrypointPath, err := prepVolumeString(config.Entrypoint, configPath)
+		if err != nil {
+			return nil, err
+		}
+		opts = append(opts, []string{"--entrypoint", entrypointPath}...)
+	}
+
 	// workdir
 	if config.Workdir != "" {
 		opts = append(opts, "-w", os.ExpandEnv(config.Workdir))
@@ -267,7 +276,7 @@ func expandEnvs(toExpand *[]string) []string {
 	return expanded
 }
 
-// prepVolumeString reformats a volume string, resolving local paths relative to the config dir
+// prepVolumeString resolves the first local path in a string (before ":") relative to the config dir
 func prepVolumeString(rawVolume string, configPath string) (string, error) {
 	// expand volume env vars and split by first ":" in string
 	volumeSplit := strings.SplitN(os.ExpandEnv(rawVolume), ":", 2)

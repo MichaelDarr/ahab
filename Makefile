@@ -14,6 +14,10 @@ LDFLAGS := $(LDFLAGS) -X "github.com/MichaelDarr/ahab/internal.Version=$(VERSION
 .PHONY: default
 default: $(BIN)
 
+.PHONY: self
+self: ## use ahab to build itself
+	$(BIN) cmd make
+
 .PHONY: build
 build: $(BIN)
 

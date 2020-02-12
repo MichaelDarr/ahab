@@ -11,6 +11,7 @@ import (
 // Configuration contains all docker config fields
 type Configuration struct {
 	AhabVersion       string   `json:"ahab"`
+	Entrypoint        string   `json:"entrypoint"`
 	Environment       []string `json:"environment"`
 	Hostname          string   `json:"hostname"`
 	ImageURI          string   `json:"image"`

@@ -1,5 +1,6 @@
 {
     "ahab": "0.1",
+    "entrypoint": "/home/ahab/src/entrypoint.sh",
     "image": "golang:1.13.7-buster",
     "volumes": [
         "./:/home/ahab/src"
