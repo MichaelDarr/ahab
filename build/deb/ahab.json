@@ -1,0 +1,8 @@
+{
+    "ahab": "0.1",
+    "image": "ubuntu:18.04",
+    "volumes": [
+        "../../:/home/ahab/src"
+    ],
+    "workdir": "/home/ahab/src/build/deb"
+}

@@ -11,3 +11,6 @@ ahab
 
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
+
+# Built packages
+build/deb/*.deb
