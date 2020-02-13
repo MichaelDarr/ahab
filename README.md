@@ -3,7 +3,6 @@ Containerization is awesome, but the upfront costs of project setup and steep le
 make it a pain. Ahab is a CLI tool that jump-starts this process, avoiding frustration without obfuscating your workflow.
 
 ## Installation
-If your distro isn't officially supported yet, 
 
 ### Arch Linux
 Ahab is available via the [`ahab-git`](https://aur.archlinux.org/packages/ahab-git/) AUR package
