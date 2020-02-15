@@ -8,9 +8,9 @@ import (
 
 var cmdCmd = &cobra.Command{
 	Use:   "cmd",
-	Short: "Execute an attatched command in a container",
+	Short: "Execute an attached command in the container",
 	Run: func(cmd *cobra.Command, args []string) {
-		helpRequested, err := internal.PrintDockerHelp(&args, "exec", `Execute an attatched command in a container
+		helpRequested, err := internal.PrintDockerHelp(&args, "exec", `Execute an in-container command, attaching the input/output to your terminal
 
 Docker Command:
   docker exec -it CONTAINER COMMAND [OPTIONS]
