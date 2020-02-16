@@ -10,7 +10,7 @@ In addition the official Docker commands, Ahab supports new ones such as `bash`,
 `status` - we'll talk about these and more later. Ahab provides everything you need to
 quickly and effectively develop a containerized project.
 
-## Table of Contents
+### Table of Contents
 * [Install](#install)
 * [Commands](#commands)
 * [Key Features](#key-features)
@@ -19,7 +19,10 @@ quickly and effectively develop a containerized project.
 ## Install
 
 ### Arch Linux
-Ahab is available via the [`ahab-git`](https://aur.archlinux.org/packages/ahab-git/) AUR package
+| AUR Package                                                   | Builds From
+| :------------------------------------------------------------ | :--
+| [`ahab`](https://aur.archlinux.org/packages/ahab/)            | Latest Release
+| [`ahab-git`](https://aur.archlinux.org/packages/ahab-git/)    | Github Master Branch 
 
 ### Debian-Based (dpkg)
 ```sh
