@@ -51,6 +51,47 @@ the new commands introduced by Ahab.
 | `status`              | Print a human-friendly container status report
 | `up`                  | Create and start the container
 
+## Config File Reference
+
+### Project Configuration
+All project configs are named `ahab.json`
+
+| Field                 | Type          | Default       | Description
+| :-------------------- | :------------ | :------------ | :--
+| `ahab`                | string        | **REQUIRED**  | Minimum Ahab version required to launch this project
+| `command`             | string        | `top -b`      | [See Docker Reference](https://docs.docker.com/engine/reference/run/#cmd-default-command-or-options)
+| `entrypoint`          | string        | None          | [See Docker Reference](https://docs.docker.com/engine/reference/run/#entrypoint-default-command-to-execute-at-runtime)
+| `environment`         | [string]      | []            | List of `KEY=VALUE` pairs of environment variables to set in the container
+| `hostname`            | string        | None          | Container host name
+| `image`               | string        | **REQUIRED**  | Docker image used by the container
+| `init`                | [string]      | []            | List of commands to be run as root immediately after container creation
+| `name`                | string        | None          | Manually assign a name to the container instead of generating it from the config path
+| `options`             | [string]      | []            | List of options passed during container creation
+| `permissions`         | PERMISSIONS   | None          | Permissions options - see the [Permissions](#permissions) section
+| `restartAfterSetup`   | boolean       | false         | If true, container restarts after permissions are set up and `init` commands are run
+| `shareX11`            | boolean       | false         | If true, container can launch windows onto the host's X11-Compatible Desktop
+| `user`                | string        | `ahab`        | User used to run commands run by ahab after initial setup by root
+| `volumes`             | [string]      | []            | List of volumes to mount during container creation
+| `workdir`             | string        | None          | [See Docker Reference](https://docs.docker.com/engine/reference/run/#workdir)
+
+#### Permissions
+
+| Field     | Type      | Default   | Description
+| :-------- | :-------- | :-------- | :--
+| `cmdSet`  | string    | None      | Commands to use while setting permissions. If using a BusyBox-based image, set to `busybox`
+| `disable` | boolean   | false     | If true, Ahab does not set up any user permissions or create the `ahab` user
+| `groups`  | [string]  | []        | Groups the `ahab` user belongs to. If a group does not exist in-image, prefix it with `!`
+
+### User Configuration
+All user configs are should be located at `~/.config/ahab/config.json`
+
+| Field                 | Type          | Default       | Description
+| :-------------------- | :------------ | :------------ | :--
+| `environment`         | [string]      | []            | List of extra `KEY=VALUE` pairs of environment variables to set in containers
+| `hideCommands`        | boolean       | false         | If true, Ahab will not print Docker commands before it runs them
+| `options`             | [string]      | []            | List of extra options passed during container creation
+| `volumes`             | [string]      | []            | List of extra of volumes to mount during container creation
+
 ## Key Features
 
 ### Container Permissions, Solved
