@@ -1,0 +1,23 @@
+Source: ahab
+Section: devel
+Priority: optional
+Maintainer: Michael Darr <michael.e.darr@gmail.com>
+Build-Depends: debhelper (>= 10), golang (>=1.11)
+Standards-Version: 4.1.2
+Homepage: https://github.com/MichaelDarr/ahab
+#Vcs-Git: https://anonscm.debian.org/git/collab-maint/ahab.git
+#Vcs-Browser: https://anonscm.debian.org/cgit/collab-maint/ahab.git
+
+Package: ahab
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Suggests: docker
+Description: Dockerize your project, git style
+ Containerization is awesome, but the upfront costs of project setup and steep
+ learning curve can make it a pain. Ahab is a CLI tool that jump-starts this
+ process, avoiding frustration without obfuscating your workflow.
+ .
+ Ahab searches for a project config file ahab.json and uses it to create and 
+ interact with Docker containers. The Ahab CLI supports all of Docker's
+ container commands without having to manually target your container name or
+ ID.

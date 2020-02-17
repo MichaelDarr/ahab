@@ -1,0 +1,28 @@
+#!/usr/bin/make -f
+# See debhelper(7) (uncomment to enable)
+# output every command that modifies files on the build system.
+#export DH_VERBOSE = 1
+
+
+# see FEATURE AREAS in dpkg-buildflags(1)
+#export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+
+# see ENVIRONMENT in dpkg-buildflags(1)
+# package maintainers to append CFLAGS
+#export DEB_CFLAGS_MAINT_APPEND  = -Wall -pedantic
+# package maintainers to append LDFLAGS
+#export DEB_LDFLAGS_MAINT_APPEND = -Wl,--as-needed
+
+LDFLAGS:=-linkmode external -extldflags "${LDFLAGS}"
+
+export EXTRA_GOFLAGS:=-buildmode=pie -gcflags all=-trimpath=${PWD} -asmflags all=-trimpath=${PWD}
+export LDFLAGS
+export PREFIX:=/usr
+
+%:
+	dh $@
+
+override_dh_auto_test:
+
+override_dh_auto_install:
+	$(MAKE) DESTDIR=debian/ahab PREFIX=/usr install

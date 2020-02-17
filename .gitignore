@@ -12,5 +12,9 @@ ahab
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
 
-# Built packages
+# Debian Build Artifacts
 build/deb/*.deb
+build/deb/ahab-*
+build/deb/ahab_*
+build/deb/*.gz
+build/deb/*.xz

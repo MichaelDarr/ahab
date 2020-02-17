@@ -1,0 +1,12 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: ahab
+Source: <https://github.com/MichaelDarr/ahab>
+
+Files: *
+Copyright: 2020 Michael Darr <michael.e.darr@gmail.com>
+License: GPL-3
+
+License: GPL-3
+ On Debian systems, the full text of the GNU General Public
+ License version 3 can be found in the file
+ '/usr/share/common-licenses/GPL-3'

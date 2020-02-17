@@ -67,10 +67,10 @@ All project configs are named `ahab.json`
 | `init`                | [string]      | []            | List of commands to be run as root immediately after container creation
 | `name`                | string        | None          | Manually assign a name to the container instead of generating it from the config path
 | `options`             | [string]      | []            | List of options passed during container creation
-| `permissions`         | PERMISSIONS   | None          | Permissions options - see the [Permissions](#permissions) section
+| `permissions`         | {[permissions](#permissions)} | {}            | See [Permissions](#permissions) section
 | `restartAfterSetup`   | boolean       | false         | If true, container restarts after permissions are set up and `init` commands are run
 | `shareX11`            | boolean       | false         | If true, container can launch windows onto the host's X11-Compatible Desktop
-| `user`                | string        | `ahab`        | User used to run commands run by ahab after initial setup by root
+| `user`                | string        | `ahab`        | User for commands after initial setup
 | `volumes`             | [string]      | []            | List of volumes to mount during container creation
 | `workdir`             | string        | None          | [See Docker Reference](https://docs.docker.com/engine/reference/run/#workdir)
 

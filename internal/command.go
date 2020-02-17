@@ -254,7 +254,7 @@ func PrepContainer(config *Configuration, configPath string) error {
 	userAddCmd := rootExec(config, configPath)
 	switch config.Permissions.CmdSet {
 	case "", "default":
-		userAddCmd = append(userAddCmd, []string{"useradd", "-o", "-d", homeDir, "-G"}...)
+		userAddCmd = append(userAddCmd, []string{"useradd", "-o", "-m", "-d", homeDir, "-G"}...)
 		userAddCmd = append(userAddCmd, strings.Join(groups, ","))
 		for _, group := range newGroups {
 			extraCmds = append(extraCmds, rootExec(config, configPath, "groupadd", group))

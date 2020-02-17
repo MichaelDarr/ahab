@@ -1,8 +1,16 @@
 {
     "ahab": "0.1",
-    "image": "ubuntu:18.04",
-    "volumes": [
-        "../../:/home/ahab/src"
+    "environment": [
+        "DEBEMAIL=michael.e.darr@gmail.com",
+        "DEBFULLNAME=Michael Darr"
     ],
-    "workdir": "/home/ahab/src/build/deb"
+    "image": "ubuntu:19.10",
+    "init": [
+        "apt-get update",
+        "apt-get install -y dh-make git golang wget"
+    ],
+    "volumes": [
+        "./:/home/ahab/deb"
+    ],
+    "workdir": "/home/ahab/deb"
 }
