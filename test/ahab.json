@@ -3,7 +3,7 @@
     "command": "dockerd",
     "image": "docker:19.03-dind",
     "init": [
-        "apk add go"
+        "apk add go make"
     ],
     "options": [
         "--privileged"
@@ -16,9 +16,9 @@
     },
     "restartAfterSetup": true,
     "volumes": [
-        "../:/home/ahab/src",
         "./mnt:/mnt",
-        "./config.json:/home/ahab/.config/ahab/config.json"
+        "../:/home/ahab/src",
+        "./ahab:/home/ahab/.config/ahab"
     ],
     "workdir": "/home/ahab/src"
 }

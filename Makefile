@@ -27,12 +27,12 @@ $(BIN): ## build
 
 .PHONY: test
 test: ## use ahab to test itself
-	cd test
-	$(BIN) cmd make containertest
+	cd test; \
+	 $(BIN) cmd make containertest
 
 .PHONY: containertest
 containertest: ## must be run inside container set up for test suite
-	$(GO) test github.com/MichaelDarr/ahab/internal
+	$(GO) test -v -ldflags '-s -w $(LDFLAGS)' github.com/MichaelDarr/ahab/internal
 
 .PHONY: install
 install:

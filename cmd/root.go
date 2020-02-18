@@ -85,7 +85,7 @@ Docker Command:
 		Run: func(cmd *cobra.Command, args []string) {
 			config, configPath, err := internal.ProjectConfig()
 			internal.PrintErrFatal(err)
-			internal.PrintErrFatal(internal.DockerContainerCmd(config, configPath, command))
+			internal.PrintErrFatal(internal.ContainerCmd(config, configPath, command))
 		},
 	}
 }

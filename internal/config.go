@@ -67,6 +67,7 @@ func ContainerName(config *Configuration, configPath string) string {
 }
 
 // ProjectConfig finds and parses the docker config file relative to the working directory
+// If the project config is not found, a non-nil error is returned
 func ProjectConfig() (config *Configuration, configPath string, err error) {
 	curDir, err := os.Getwd()
 	if err != nil {
@@ -104,6 +105,7 @@ func ProjectConfig() (config *Configuration, configPath string, err error) {
 }
 
 // UserConfig finds and parses the user's docker config file
+// If the user's config is not found, an empty userConfig is returned
 func UserConfig() (userConfig *UserConfiguration, err error) {
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
@@ -168,35 +170,4 @@ func missingConfigVars(config *Configuration) (missingVars string) {
 		missingVars = appendToStrList(missingVars, "image")
 	}
 	return
-}
-
-// versionOrdinal standardizes version strings for easy comparison
-// see https://stackoverflow.com/a/18411978
-func versionOrdinal(version string) (string, error) {
-	// ISO/IEC 14651:2011
-	const maxByte = 1<<8 - 1
-	vo := make([]byte, 0, len(version)+8)
-	j := -1
-	for i := 0; i < len(version); i++ {
-		b := version[i]
-		if '0' > b || b > '9' {
-			vo = append(vo, b)
-			j = -1
-			continue
-		}
-		if j == -1 {
-			vo = append(vo, 0x00)
-			j = len(vo) - 1
-		}
-		if vo[j] == 1 && vo[j+1] == '0' {
-			vo[j+1] = b
-			continue
-		}
-		if vo[j]+1 > maxByte {
-			return "", fmt.Errorf("versionOrdinal: Invalid version '%s'", version)
-		}
-		vo = append(vo, b)
-		vo[j]++
-	}
-	return string(vo), nil
 }

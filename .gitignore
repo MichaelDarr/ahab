@@ -20,3 +20,6 @@ build/deb/*.gz
 build/deb/*.xz
 build/deb/*.gz.*
 build/deb/*.xz.*
+
+# Test config dir (exception)
+!test/ahab
