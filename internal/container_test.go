@@ -77,6 +77,25 @@ func TestCreate(t *testing.T) {
 	container.Down()
 }
 
+func TestDown(t *testing.T) {
+	container := miniContainer("down")
+	container.Create(true)
+	expectContainerStatus(3, container, t)
+	err := container.Down()
+	if err != nil {
+		t.Errorf("Error down-ing container: %s", err)
+	}
+	expectContainerStatus(0, container, t)
+
+	container.Create(false)
+	expectContainerStatus(6, container, t)
+	err = container.Down()
+	if err != nil {
+		t.Errorf("Error down-ing container: %s", err)
+	}
+	expectContainerStatus(0, container, t)
+}
+
 func TestName(t *testing.T) {
 	container := miniContainer("name")
 	name := container.Name()
@@ -85,4 +104,24 @@ func TestName(t *testing.T) {
 	container.Fields.Name = "named_container"
 	name = container.Name()
 	expectStrEq("named_container", name, t)
+}
+
+func TestProp(t *testing.T) {
+	container := miniContainer("prop")
+	status, err := container.Prop("State.Status")
+	if err != nil {
+		t.Error("Unexpected error on prop check for nonexistent container")
+	} else if status != "" {
+		t.Errorf("Non-empty string on prop check for nonexistent container. Received: %s", status)
+	}
+
+	container.Create(true)
+	expectContainerStatus(3, container, t)
+	status, err = container.Prop("State.Status")
+	if err != nil {
+		t.Errorf("Unexpected an error on prop check: %s", err)
+	} else if status == "" {
+		t.Error("Empty string receieved on prop check for existing container")
+	}
+	container.Down()
 }

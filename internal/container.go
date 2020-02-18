@@ -104,6 +104,20 @@ func (container *Container) Create(startContainer bool) error {
 	return nil
 }
 
+// Down stops and removes the container
+func (container *Container) Down() (err error) {
+	status, err := container.Status()
+	if err == nil && (status == 2 || status == 3 || status == 5) {
+		err = container.Cmd("stop")
+		if err == nil {
+			err = container.Cmd("rm")
+		}
+	} else if err == nil && (status == 1 || status == 6 || status == 7) {
+		err = container.Cmd("rm")
+	}
+	return
+}
+
 // Name fetches the container name
 func (container *Container) Name() string {
 	if container.Fields.Name == "" {
@@ -162,20 +176,6 @@ func (container *Container) Status() (int, error) {
 	default:
 		return 0, fmt.Errorf("Unexpected container status: %s", status)
 	}
-}
-
-// Down stops and removes the container
-func (container *Container) Down() (err error) {
-	status, err := container.Status()
-	if err == nil && (status == 2 || status == 3 || status == 5) {
-		err = container.Cmd("stop")
-		if err == nil {
-			err = container.Cmd("rm")
-		}
-	} else if err == nil && (status == 1 || status == 6 || status == 7) {
-		err = container.Cmd("rm")
-	}
-	return
 }
 
 // Up creates and starts the container
