@@ -8,6 +8,7 @@ GO ?= go
 PREFIX := /usr/local
 VERSION = $(shell cat VERSION)
 
+GOFLAGS := -mod=vendor
 EXTRA_GOFLAGS ?=
 LDFLAGS := $(LDFLAGS) -X "github.com/MichaelDarr/ahab/internal.Version=$(VERSION)"
 
@@ -32,7 +33,7 @@ test: ## use ahab to test itself
 
 .PHONY: containertest
 containertest: ## must be run inside container set up for test suite
-	$(GO) test -ldflags '-s -w $(LDFLAGS)' github.com/MichaelDarr/ahab/internal
+	$(GO) test $(GOFLAGS) -ldflags '-s -w $(LDFLAGS)' github.com/MichaelDarr/ahab/internal
 
 .PHONY: coverage
 coverage: ## use ahab to test itself and generate a coverage report
@@ -41,7 +42,7 @@ coverage: ## use ahab to test itself and generate a coverage report
 
 .PHONY: containercoverage
 containercoverage: ## also run inside container, with verbose output and a coverage report
-	$(GO) test -v -coverprofile cp.out -ldflags '-s -w $(LDFLAGS)' github.com/MichaelDarr/ahab/internal
+	$(GO) test $(GOFLAGS) -v -coverprofile cp.out -ldflags '-s -w $(LDFLAGS)' github.com/MichaelDarr/ahab/internal
 
 .PHONY: install
 install:
