@@ -29,36 +29,60 @@ func TestGetContainer(t *testing.T) {
 	}
 }
 
+func TestCmd(t *testing.T) {
+	container := miniContainer("cmd")
+	container.Create(true)
+	expectContainerStatus(3, container, t)
+
+	err := container.Cmd("pause")
+	if err != nil {
+		t.Errorf("Error executing pause cmd on container: %s", err)
+	}
+	expectContainerStatus(5, container, t)
+
+	err = container.Cmd("unpause")
+	if err != nil {
+		t.Errorf("Error executing unpause cmd on container: %s", err)
+	}
+	expectContainerStatus(3, container, t)
+
+	err = container.Cmd("stop")
+	if err != nil {
+		t.Errorf("Error executing stop cmd on container: %s", err)
+	}
+	expectContainerStatus(6, container, t)
+
+	err = container.Cmd("start")
+	if err != nil {
+		t.Errorf("Error executing start cmd on container: %s", err)
+	}
+	expectContainerStatus(3, container, t)
+	container.Down()
+}
+
 func TestCreate(t *testing.T) {
-	config := miniConfig("create")
-
-	err := config.Create(true)
+	container := miniContainer("create")
+	err := container.Create(true)
 	if err != nil {
 		t.Errorf("Error creating container: %s", err)
 	}
-	status, _ := config.Status()
-	if status != 3 {
-		t.Errorf("Create did not leave container running (container is %s)", ParseStatus(status))
-	}
-	config.Down()
+	expectContainerStatus(3, container, t)
+	container.Down()
 
-	err = config.Create(false)
+	err = container.Create(false)
 	if err != nil {
 		t.Errorf("Error creating container: %s", err)
 	}
-	status, _ = config.Status()
-	if status == 3 {
-		t.Errorf("Create left container running")
-	}
-	config.Down()
+	prohibitContainerStatus(3, container, t)
+	container.Down()
 }
 
 func TestName(t *testing.T) {
-	config := miniConfig("name")
-	name := config.Name()
+	container := miniContainer("name")
+	name := container.Name()
 	expectStrEq("test_name", name, t)
 
-	config.Fields.Name = "named_container"
-	name = config.Name()
+	container.Fields.Name = "named_container"
+	name = container.Name()
 	expectStrEq("named_container", name, t)
 }
