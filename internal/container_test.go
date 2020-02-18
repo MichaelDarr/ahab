@@ -125,3 +125,29 @@ func TestProp(t *testing.T) {
 	}
 	container.Down()
 }
+
+func TestUp(t *testing.T) {
+	container := miniContainer("up")
+	err := container.Up()
+	if err != nil {
+		t.Errorf("Error up-ing container: %s", err)
+	}
+	expectContainerStatus(3, container, t)
+
+	container.Cmd("pause")
+	expectContainerStatus(5, container, t)
+	err = container.Up()
+	if err != nil {
+		t.Errorf("Error up-ing container: %s", err)
+	}
+	expectContainerStatus(3, container, t)
+
+	container.Cmd("stop")
+	expectContainerStatus(6, container, t)
+	err = container.Up()
+	if err != nil {
+		t.Errorf("Error up-ing container: %s", err)
+	}
+	expectContainerStatus(3, container, t)
+	container.Down()
+}
