@@ -1,7 +1,7 @@
 package internal
 
 import (
-	"bytes"
+	"encoding/json"
 	"fmt"
 	"os"
 	"os/exec"
@@ -21,14 +21,32 @@ type Container struct {
 
 // GetContainer retrieves all container info relative to the working directory
 func GetContainer() (*Container, error) {
-	config, configPath, err := GetConfig()
+	curDir, err := os.Getwd()
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("Failed to get working directory: %s", err)
 	}
-	return &Container{
-		Fields:   config,
-		FilePath: configPath,
-	}, nil
+
+	container := new(Container)
+	container.FilePath, err = findConfigPath(curDir)
+	if err != nil {
+		return nil, fmt.Errorf("Failed to find config file: %s", err)
+	}
+
+	configFile, err := os.Open(container.FilePath)
+	if err != nil {
+		return nil, fmt.Errorf("Failed to open config file '%s': %s", container.FilePath, err)
+	}
+	defer configFile.Close()
+
+	decoder := json.NewDecoder(configFile)
+	if err = decoder.Decode(&container.Fields); err != nil {
+		return nil, fmt.Errorf("Failed to parse config file '%s': %s", container.FilePath, err)
+	}
+
+	if missing := container.Fields.missingFields(); missing != "" {
+		return nil, fmt.Errorf("Config file '%s' missing required fields: %s", container.FilePath, missing)
+	}
+	return container, checkConfigVersion(container.Fields.AhabVersion)
 }
 
 // Cmd runs a container command in the form docker [command] [container name]
@@ -119,31 +137,45 @@ func (container *Container) Prop(fieldID string) (string, error) {
 // 6 - exited
 // 7 - dead
 func (container *Container) Status() (int, error) {
-	output, err := DockerOutput(&[]string{"inspect", "-f", "{{.State.Status}}", container.Name()})
-	if exitErr, ok := err.(*exec.ExitError); ok && exitErr.ExitCode() == 1 {
-		return 0, nil
-	} else if err != nil {
+	status, err := container.Prop("State.Status")
+	if err != nil {
 		return 0, fmt.Errorf("Error checking container status: %s", err)
 	}
 
-	switch {
-	case bytes.Contains(output, []byte("created")):
+	switch status {
+	case "":
+		return 0, nil
+	case "created":
 		return 1, nil
-	case bytes.Contains(output, []byte("restarting")):
+	case "restarting":
 		return 2, nil
-	case bytes.Contains(output, []byte("running")):
+	case "running":
 		return 3, nil
-	case bytes.Contains(output, []byte("removing")):
+	case "removing":
 		return 4, nil
-	case bytes.Contains(output, []byte("paused")):
+	case "paused":
 		return 5, nil
-	case bytes.Contains(output, []byte("exited")):
+	case "exited":
 		return 6, nil
-	case bytes.Contains(output, []byte("dead")):
+	case "dead":
 		return 7, nil
 	default:
-		return 0, fmt.Errorf("Unexpected container status: %s", err)
+		return 0, fmt.Errorf("Unexpected container status: %s", status)
 	}
+}
+
+// Down stops and removes the container
+func (container *Container) Down() (err error) {
+	status, err := container.Status()
+	if err == nil && (status == 2 || status == 3 || status == 5) {
+		err = container.Cmd("stop")
+		if err == nil {
+			err = container.Cmd("rm")
+		}
+	} else if err == nil && (status == 1 || status == 6 || status == 7) {
+		err = container.Cmd("rm")
+	}
+	return
 }
 
 // Up creates and starts the container
@@ -164,6 +196,9 @@ func (container *Container) Up() error {
 // return a slice of options used when creating the container
 func (container *Container) creationOpts() (opts []string, err error) {
 	userConfig, err := UserConfig()
+	if err != nil {
+		return
+	}
 
 	// initial (idle) process runs as root user
 	opts = []string{"-u", "root"}

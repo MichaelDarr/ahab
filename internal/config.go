@@ -7,32 +7,32 @@ import (
 	"path/filepath"
 )
 
-// Version is the build-time dcfg version
-var Version string
-
 // ConfigFileName holds the name of the config file
 const ConfigFileName = "ahab.json"
 
 // UserConfigFilePath holds the path of the user's config file, relative to their home dir
 const UserConfigFilePath = ".config/ahab/config.json"
 
+// Version holds the build-time ahab version
+var Version string
+
 // Configuration contains docker config fields
 type Configuration struct {
-	AhabVersion       string             `json:"ahab"`
-	Command           string             `json:"command"`
-	Entrypoint        string             `json:"entrypoint"`
-	Environment       []string           `json:"environment"`
-	Hostname          string             `json:"hostname"`
-	ImageURI          string             `json:"image"`
-	Init              []string           `json:"init"`
-	Name              string             `json:"name"`
-	Options           []string           `json:"options"`
-	Permissions       *PermConfiguration `json:"permissions"`
-	RestartAfterSetup bool               `json:"restartAfterSetup"`
-	ShareX11          bool               `json:"shareX11"`
-	User              string             `json:"user"`
-	Volumes           []string           `json:"volumes"`
-	Workdir           string             `json:"workdir"`
+	AhabVersion       string            `json:"ahab"`
+	Command           string            `json:"command"`
+	Entrypoint        string            `json:"entrypoint"`
+	Environment       []string          `json:"environment"`
+	Hostname          string            `json:"hostname"`
+	ImageURI          string            `json:"image"`
+	Init              []string          `json:"init"`
+	Name              string            `json:"name"`
+	Options           []string          `json:"options"`
+	Permissions       PermConfiguration `json:"permissions"`
+	RestartAfterSetup bool              `json:"restartAfterSetup"`
+	ShareX11          bool              `json:"shareX11"`
+	User              string            `json:"user"`
+	Volumes           []string          `json:"volumes"`
+	Workdir           string            `json:"workdir"`
 }
 
 // UserConfiguration contains global user config fields
@@ -48,53 +48,6 @@ type PermConfiguration struct {
 	CmdSet  string   `json:"cmdSet"`
 	Disable bool     `json:"disable"`
 	Groups  []string `json:"groups"`
-}
-
-// a comma-separated list of required fields missing from a configuration
-func (config *Configuration) missingFields() (missingVars string) {
-	if config.AhabVersion == "" {
-		missingVars = appendToStrList(missingVars, "ahab")
-	}
-	if config.ImageURI == "" {
-		missingVars = appendToStrList(missingVars, "image")
-	}
-	return
-}
-
-// GetConfig finds and parses the config file relative to the working directory
-func GetConfig() (config *Configuration, configPath string, err error) {
-	curDir, err := os.Getwd()
-	if err != nil {
-		err = fmt.Errorf("Failed to get working directory: %s", err)
-		return
-	}
-
-	configPath, err = findConfigPath(curDir)
-	if err != nil {
-		err = fmt.Errorf("Failed to find config file: %s", err)
-		return
-	}
-
-	configFile, err := os.Open(configPath)
-	if err != nil {
-		err = fmt.Errorf("Failed to open config file '%s': %s", configPath, err)
-		return
-	}
-	defer configFile.Close()
-
-	decoder := json.NewDecoder(configFile)
-	if err = decoder.Decode(&config); err != nil {
-		err = fmt.Errorf("Failed to parse config file '%s': %s", configPath, err)
-		return
-	}
-
-	if missingFields := config.missingFields(); missingFields != "" {
-		err = fmt.Errorf("Config file '%s' missing required fields: %s", configPath, missingFields)
-		return
-	}
-
-	err = checkConfigVersion(config.AhabVersion)
-	return
 }
 
 // UserConfig finds and parses the user's docker config file
@@ -150,6 +103,17 @@ func findConfigPath(topDir string) (configPath string, err error) {
 		err = fmt.Errorf("Failed to find config file '%s': %s", ConfigFileName, err)
 	} else {
 		configPath = configTestPath
+	}
+	return
+}
+
+// a comma-separated list of required fields missing from a configuration
+func (config *Configuration) missingFields() (missingVars string) {
+	if config.AhabVersion == "" {
+		missingVars = appendToStrList(missingVars, "ahab")
+	}
+	if config.ImageURI == "" {
+		missingVars = appendToStrList(missingVars, "image")
 	}
 	return
 }

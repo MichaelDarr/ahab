@@ -6,44 +6,14 @@ import (
 	"testing"
 )
 
-func TestContainer(t *testing.T) {
-	name := minConfig.Name()
-	expectStrEq("ahab_test_min", name, t)
-
-	name = maxConfig.Name()
-	expectStrEq("maxConfig", name, t)
-}
-
-func TestGetContainer(t *testing.T) {
-	os.Chdir(noConfDir)
-	container, err := GetContainer()
-	if err == nil {
-		t.Errorf("Unexpected success finding project config: %s", err)
-	}
-
-	os.Chdir(exampleConfDir)
-	container, err = GetContainer()
-	if err != nil {
-		t.Errorf("Error finding project config: %s", err)
-	} else if container.FilePath != exampleConfPath {
-		t.Errorf("Error finding project config path. Expected %s, Found %s", exampleConfPath, container.FilePath)
-	}
-
-	os.Chdir(exampleConfChildDir)
-	container, err = GetContainer()
-	if err != nil {
-		t.Errorf("Error finding project config from child dir: %s", err)
-	} else if container.FilePath != exampleConfPath {
-		t.Errorf("Error finding project config path from child dir. Expected %s, Found %s", exampleConfPath, container.FilePath)
-	}
-}
-
 func TestUserConfig(t *testing.T) {
+	// this test runs in a different group than others as it changes the user's config file
+	t.Parallel()
 	config, err := UserConfig()
 	if err != nil {
 		t.Errorf("Unexpected error finding present user config: %s", err)
-	} else if config.HideCommands != true {
-		t.Errorf("Unexpected value for hideCommands in user config file. Expected true, found %v", config.HideCommands)
+	} else if !config.HideCommands {
+		t.Error("hidecommands key is true in user config but not in parsed config object")
 	}
 
 	// Find and temporarily rename user config file
@@ -56,8 +26,8 @@ func TestUserConfig(t *testing.T) {
 	config, err = UserConfig()
 	if err != nil {
 		t.Errorf("Unexpected error finding nonexistent user config: %s", err)
-	} else if config.HideCommands != false {
-		t.Errorf("Unexpected value for hideCommands in nonexistent config file. Expected false, found %v", config.HideCommands)
+	} else if config.HideCommands {
+		t.Error("hidecommands read as true from user config, which should be nonexistent")
 	}
 }
 

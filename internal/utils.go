@@ -8,6 +8,38 @@ import (
 	"strings"
 )
 
+// ParseStatus returns the readable string of the passed container status
+// 0 - not found
+// 1 - created
+// 2 - restarting
+// 3 - running
+// 4 - removing
+// 5 - paused
+// 6 - exited
+// 7 - dead
+func ParseStatus(code int) string {
+	switch code {
+	case 0:
+		return "not found"
+	case 1:
+		return "created"
+	case 2:
+		return "restarting"
+	case 3:
+		return "running"
+	case 4:
+		return "removing"
+	case 5:
+		return "paused"
+	case 6:
+		return "exited"
+	case 7:
+		return "dead"
+	default:
+		return "unknown"
+	}
+}
+
 // expandConfEnv expands environment variables present in a slice of strings
 func expandEnvs(toExpand *[]string) []string {
 	expanded := make([]string, len(*toExpand))
