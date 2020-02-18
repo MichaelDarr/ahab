@@ -138,7 +138,7 @@ func checkConfigVersion(configVersion string) error {
 	}
 
 	if configVersionOrd > selfVersionOrd {
-		return fmt.Errorf("Config file requires dcfg >= %s (your version: %s)", configVersion, Version)
+		return fmt.Errorf("Config file requires ahab >= %s (your version: %s)", configVersion, Version)
 	}
 	return nil
 }

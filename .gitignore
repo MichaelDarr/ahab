@@ -18,3 +18,5 @@ build/deb/ahab-*
 build/deb/ahab_*
 build/deb/*.gz
 build/deb/*.xz
+build/deb/*.gz.*
+build/deb/*.xz.*

@@ -29,7 +29,7 @@ echo "Additional Steps:
 * See files in template/* for more changes
 
 Build Package:
-$ dpkg-buildpackage -us -uc
+$ dpkg-buildpackage -S
 
 Sign Package:
 $ debsign -k [KEY ID] [PACKAGE].changes
