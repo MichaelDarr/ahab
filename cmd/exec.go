@@ -23,17 +23,17 @@ Usage:
 			return
 		}
 
-		config, configPath, err := internal.ProjectConfig()
+		container, err := internal.GetContainer()
 		internal.PrintErrFatal(err)
-		internal.PrintErrFatal(internal.UpContainer(config, configPath))
+		internal.PrintErrFatal(container.Up())
 
 		containerOpts := []string{"exec"}
-		if config.User != "" {
-			containerOpts = append(containerOpts, "-u", config.User)
-		} else if !config.Permissions.Disable {
+		if container.Fields.User != "" {
+			containerOpts = append(containerOpts, "-u", container.Fields.User)
+		} else if !container.Fields.Permissions.Disable {
 			containerOpts = append(containerOpts, "-u", internal.ContainerUserName)
 		}
-		containerOpts = append(containerOpts, internal.ContainerName(config, configPath))
+		containerOpts = append(containerOpts, container.Name())
 		containerOpts = append(containerOpts, args...)
 		internal.PrintErrFatal(internal.DockerCmd(&containerOpts))
 	},

@@ -57,6 +57,6 @@ func ListVolumes() error {
 }
 
 // rootExec transforms a command into a DockerCmd-ready root-executed command
-func rootExec(config *Configuration, configPath string, args ...string) []string {
-	return append([]string{"exec", "-u", "root", ContainerName(config, configPath)}, args...)
+func rootExec(container *Container, args ...string) []string {
+	return append([]string{"exec", "-u", "root", container.Name()}, args...)
 }

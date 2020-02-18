@@ -12,13 +12,13 @@ var statusCmd = &cobra.Command{
 	Use:   "status",
 	Short: "Print container status",
 	Run: func(cmd *cobra.Command, args []string) {
-		config, configPath, err := internal.ProjectConfig()
+		container, err := internal.GetContainer()
 		internal.PrintErrFatal(err)
 
 		fmt.Println("Container:")
-		internal.PrintIndentedPair("Name", internal.ContainerName(config, configPath))
+		internal.PrintIndentedPair("Name", container.Name())
 
-		statusCode, err := internal.ContainerStatus(config, configPath)
+		statusCode, err := container.Status()
 		internal.PrintErrFatal(err)
 		switch statusCode {
 		case 0:
@@ -41,19 +41,19 @@ var statusCmd = &cobra.Command{
 			internal.PrintIndentedPair("Status", "Unknown")
 		}
 
-		containerImage, err := internal.ContainerProp(config, configPath, "Config.Image")
+		containerImage, err := container.Prop("Config.Image")
 		internal.PrintErrFatal(err)
 		if containerImage != "" {
 			internal.PrintIndentedPair("Image", containerImage)
 		}
 
-		containerID, err := internal.ContainerProp(config, configPath, "Id")
+		containerID, err := container.Prop("Id")
 		internal.PrintErrFatal(err)
 		if containerID != "" {
 			internal.PrintIndentedPair("ID", containerID)
 		}
 
-		internal.PrintIndentedPair("Config", configPath)
+		internal.PrintIndentedPair("Config", container.FilePath)
 	},
 }
 

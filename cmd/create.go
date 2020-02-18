@@ -14,10 +14,10 @@ var createCmd = &cobra.Command{
 Docker Command:
   docker create -t [options from ahab.json]`,
 	Run: func(cmd *cobra.Command, args []string) {
-		config, configPath, err := internal.ProjectConfig()
+		container, err := internal.GetContainer()
 		internal.PrintErrFatal(err)
 
-		err = internal.CreateContainer(config, configPath, false)
+		err = container.Create(false)
 		internal.PrintErrFatal(err)
 	},
 }

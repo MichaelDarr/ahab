@@ -4,28 +4,20 @@ import "testing"
 
 const noConfDir = "/mnt/empty"
 const exampleConfDir = "/mnt/project"
-const exampleConfPath = "/mnt/project/" + configFileName
+const exampleConfPath = "/mnt/project/" + ConfigFileName
 const exampleConfChildDir = "/mnt/project/src"
 
-type loadedConfig struct {
-	containerName string
-	path          string
-	data          *Configuration
-}
-
-var minConfig = &loadedConfig{
-	containerName: "ahab_test_min",
-	path:          "/ahab/test/min/" + configFileName,
-	data: &Configuration{
+var minConfig = &Container{
+	FilePath: "/ahab/test/min/" + ConfigFileName,
+	Fields: &Configuration{
 		AhabVersion: "0.1",
 		ImageURI:    "ubuntu:18.04",
 	},
 }
 
-var maxConfig = &loadedConfig{
-	containerName: "maxConfig",
-	path:          "/ahab/test/max/" + configFileName,
-	data: &Configuration{
+var maxConfig = &Container{
+	FilePath: "/ahab/test/max/" + ConfigFileName,
+	Fields: &Configuration{
 		AhabVersion: "0.1",
 		Environment: []string{
 			"SOME=$THINGONE",

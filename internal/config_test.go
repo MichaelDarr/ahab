@@ -6,40 +6,35 @@ import (
 	"testing"
 )
 
-func TestContainerPathName(t *testing.T) {
-	name := ContainerPathName(minConfig.path)
-	expectStrEq(minConfig.containerName, name, t)
+func TestContainer(t *testing.T) {
+	name := minConfig.Name()
+	expectStrEq("ahab_test_min", name, t)
+
+	name = maxConfig.Name()
+	expectStrEq("maxConfig", name, t)
 }
 
-func TestContainerName(t *testing.T) {
-	name := ContainerName(minConfig.data, minConfig.path)
-	expectStrEq(minConfig.containerName, name, t)
-
-	name = ContainerName(maxConfig.data, maxConfig.path)
-	expectStrEq(maxConfig.containerName, name, t)
-}
-
-func TestProjectConfig(t *testing.T) {
+func TestGetContainer(t *testing.T) {
 	os.Chdir(noConfDir)
-	_, _, err := ProjectConfig()
+	container, err := GetContainer()
 	if err == nil {
 		t.Errorf("Unexpected success finding project config: %s", err)
 	}
 
 	os.Chdir(exampleConfDir)
-	_, configPath, err := ProjectConfig()
+	container, err = GetContainer()
 	if err != nil {
 		t.Errorf("Error finding project config: %s", err)
-	} else if configPath != exampleConfPath {
-		t.Errorf("Error finding project config path. Expected %s, Found %s", exampleConfPath, configPath)
+	} else if container.FilePath != exampleConfPath {
+		t.Errorf("Error finding project config path. Expected %s, Found %s", exampleConfPath, container.FilePath)
 	}
 
 	os.Chdir(exampleConfChildDir)
-	_, configPath, err = ProjectConfig()
+	container, err = GetContainer()
 	if err != nil {
 		t.Errorf("Error finding project config from child dir: %s", err)
-	} else if configPath != exampleConfPath {
-		t.Errorf("Error finding project config path from child dir. Expected %s, Found %s", exampleConfPath, configPath)
+	} else if container.FilePath != exampleConfPath {
+		t.Errorf("Error finding project config path from child dir. Expected %s, Found %s", exampleConfPath, container.FilePath)
 	}
 }
 
@@ -53,7 +48,7 @@ func TestUserConfig(t *testing.T) {
 
 	// Find and temporarily rename user config file
 	homeDir, _ := os.UserHomeDir()
-	configPath := filepath.Join(homeDir, userConfigFilePath)
+	configPath := filepath.Join(homeDir, UserConfigFilePath)
 	configPathTmp := filepath.Join(filepath.Dir(configPath), "tmp.json")
 	os.Rename(configPath, configPathTmp)
 	defer os.Rename(configPathTmp, configPath)
@@ -93,7 +88,7 @@ func TestFindConfigPath(t *testing.T) {
 
 	// look for config where it is present
 	configPath, err := findConfigPath(exampleConfDir)
-	expectedConfPath := filepath.Join(exampleConfDir, configFileName)
+	expectedConfPath := filepath.Join(exampleConfDir, ConfigFileName)
 	if err != nil {
 		t.Errorf("Error finding a config file in %s", exampleConfDir)
 	} else if configPath != expectedConfPath {
@@ -107,20 +102,4 @@ func TestFindConfigPath(t *testing.T) {
 	} else if configPath != expectedConfPath {
 		t.Errorf("Unexpected config path found for %s: '%s' (Expected %s)", exampleConfDir, configPath, expectedConfPath)
 	}
-}
-
-func TestMissingConfigVars(t *testing.T) {
-	var config = Configuration{ImageURI: "ubuntu:18.04"}
-	missing := missingConfigVars(&config)
-	expectStrEq("ahab", missing, t)
-
-	config = Configuration{AhabVersion: "0.1"}
-	missing = missingConfigVars(&config)
-	expectStrEq("image", missing, t)
-
-	missing = missingConfigVars(&Configuration{})
-	expectStrEq("ahab, image", missing, t)
-
-	missing = missingConfigVars(minConfig.data)
-	expectStrEq("", missing, t)
 }

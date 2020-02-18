@@ -10,9 +10,9 @@ var upCmd = &cobra.Command{
 	Use:   "up",
 	Short: "Create and start container",
 	Run: func(cmd *cobra.Command, args []string) {
-		config, configPath, err := internal.ProjectConfig()
+		container, err := internal.GetContainer()
 		internal.PrintErrFatal(err)
-		internal.PrintErrFatal(internal.UpContainer(config, configPath))
+		internal.PrintErrFatal(container.Up())
 	},
 }
 

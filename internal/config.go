@@ -5,33 +5,34 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"strings"
 )
+
+// Version is the build-time dcfg version
+var Version string
+
+// ConfigFileName holds the name of the config file
+const ConfigFileName = "ahab.json"
+
+// UserConfigFilePath holds the path of the user's config file, relative to their home dir
+const UserConfigFilePath = ".config/ahab/config.json"
 
 // Configuration contains docker config fields
 type Configuration struct {
-	AhabVersion       string            `json:"ahab"`
-	Command           string            `json:"command"`
-	Entrypoint        string            `json:"entrypoint"`
-	Environment       []string          `json:"environment"`
-	Hostname          string            `json:"hostname"`
-	ImageURI          string            `json:"image"`
-	Init              []string          `json:"init"`
-	Name              string            `json:"name"`
-	Options           []string          `json:"options"`
-	Permissions       PermConfiguration `json:"permissions"`
-	RestartAfterSetup bool              `json:"restartAfterSetup"`
-	ShareX11          bool              `json:"shareX11"`
-	User              string            `json:"user"`
-	Volumes           []string          `json:"volumes"`
-	Workdir           string            `json:"workdir"`
-}
-
-// PermConfiguration contains information regarding container user permissions setup
-type PermConfiguration struct {
-	CmdSet  string   `json:"cmdSet"`
-	Disable bool     `json:"disable"`
-	Groups  []string `json:"groups"`
+	AhabVersion       string             `json:"ahab"`
+	Command           string             `json:"command"`
+	Entrypoint        string             `json:"entrypoint"`
+	Environment       []string           `json:"environment"`
+	Hostname          string             `json:"hostname"`
+	ImageURI          string             `json:"image"`
+	Init              []string           `json:"init"`
+	Name              string             `json:"name"`
+	Options           []string           `json:"options"`
+	Permissions       *PermConfiguration `json:"permissions"`
+	RestartAfterSetup bool               `json:"restartAfterSetup"`
+	ShareX11          bool               `json:"shareX11"`
+	User              string             `json:"user"`
+	Volumes           []string           `json:"volumes"`
+	Workdir           string             `json:"workdir"`
 }
 
 // UserConfiguration contains global user config fields
@@ -42,33 +43,26 @@ type UserConfiguration struct {
 	Volumes      []string `json:"volumes"`
 }
 
-// Version is the build-time dcfg version
-var Version string
-
-// configFileName holds the name of the config file
-const configFileName = "ahab.json"
-
-// userConfigFilePath holds the path of the user's config file, relative to their home dir
-const userConfigFilePath = ".config/ahab/config.json"
-
-// ContainerPathName returns a filepath-based container name for a given config file
-func ContainerPathName(configPath string) string {
-	name := filepath.Dir(configPath)
-	name = strings.TrimPrefix(name, "/")
-	return strings.ReplaceAll(name, "/", "_")
+// PermConfiguration contains information regarding container user permissions setup
+type PermConfiguration struct {
+	CmdSet  string   `json:"cmdSet"`
+	Disable bool     `json:"disable"`
+	Groups  []string `json:"groups"`
 }
 
-// ContainerName returns a consistent container name for config file
-func ContainerName(config *Configuration, configPath string) string {
-	if config.Name == "" {
-		return ContainerPathName(configPath)
+// a comma-separated list of required fields missing from a configuration
+func (config *Configuration) missingFields() (missingVars string) {
+	if config.AhabVersion == "" {
+		missingVars = appendToStrList(missingVars, "ahab")
 	}
-	return config.Name
+	if config.ImageURI == "" {
+		missingVars = appendToStrList(missingVars, "image")
+	}
+	return
 }
 
-// ProjectConfig finds and parses the docker config file relative to the working directory
-// If the project config is not found, a non-nil error is returned
-func ProjectConfig() (config *Configuration, configPath string, err error) {
+// GetConfig finds and parses the config file relative to the working directory
+func GetConfig() (config *Configuration, configPath string, err error) {
 	curDir, err := os.Getwd()
 	if err != nil {
 		err = fmt.Errorf("Failed to get working directory: %s", err)
@@ -94,9 +88,8 @@ func ProjectConfig() (config *Configuration, configPath string, err error) {
 		return
 	}
 
-	missingVars := missingConfigVars(config)
-	if missingVars != "" {
-		err = fmt.Errorf("Config file '%s' missing required fields: %s", configPath, missingVars)
+	if missingFields := config.missingFields(); missingFields != "" {
+		err = fmt.Errorf("Config file '%s' missing required fields: %s", configPath, missingFields)
 		return
 	}
 
@@ -113,7 +106,7 @@ func UserConfig() (userConfig *UserConfiguration, err error) {
 		return
 	}
 
-	configPath := filepath.Join(homeDir, userConfigFilePath)
+	configPath := filepath.Join(homeDir, UserConfigFilePath)
 	configFile, err := os.Open(configPath)
 	if err != nil && os.IsNotExist(err) {
 		var blankConfig UserConfiguration
@@ -147,27 +140,16 @@ func checkConfigVersion(configVersion string) error {
 
 // findConfigPath recursively searches for a config file starting at topDir, ending at fs root
 func findConfigPath(topDir string) (configPath string, err error) {
-	configTestPath := filepath.Join(topDir, configFileName)
+	configTestPath := filepath.Join(topDir, ConfigFileName)
 	_, err = os.Stat(configTestPath)
 	if err != nil && os.IsNotExist(err) && filepath.Clean(topDir) != "/" {
 		configPath, err = findConfigPath(filepath.Join(topDir, ".."))
 	} else if err != nil && os.IsNotExist(err) {
-		err = fmt.Errorf("No config file '%s' found in current or parent directories", configFileName)
+		err = fmt.Errorf("No config file '%s' found in current or parent directories", ConfigFileName)
 	} else if err != nil {
-		err = fmt.Errorf("Failed to find config file '%s': %s", configFileName, err)
+		err = fmt.Errorf("Failed to find config file '%s': %s", ConfigFileName, err)
 	} else {
 		configPath = configTestPath
-	}
-	return
-}
-
-// missingConfigVars returns a comma-separated string of missing required config fields
-func missingConfigVars(config *Configuration) (missingVars string) {
-	if config.AhabVersion == "" {
-		missingVars = appendToStrList(missingVars, "ahab")
-	}
-	if config.ImageURI == "" {
-		missingVars = appendToStrList(missingVars, "image")
 	}
 	return
 }

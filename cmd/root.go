@@ -83,9 +83,9 @@ func BasicCommand(command string, description string) cobra.Command {
 Docker Command:
   docker ` + command + ` CONTAINER`,
 		Run: func(cmd *cobra.Command, args []string) {
-			config, configPath, err := internal.ProjectConfig()
+			container, err := internal.GetContainer()
 			internal.PrintErrFatal(err)
-			internal.PrintErrFatal(internal.ContainerCmd(config, configPath, command))
+			internal.PrintErrFatal(container.Cmd(command))
 		},
 	}
 }
@@ -108,11 +108,11 @@ Usage:
 			if helpRequested {
 				return
 			}
-			config, configPath, err := internal.ProjectConfig()
+			container, err := internal.GetContainer()
 			internal.PrintErrFatal(err)
 
 			containerOpts := append([]string{command}, args...)
-			containerOpts = append(containerOpts, internal.ContainerName(config, configPath))
+			containerOpts = append(containerOpts, container.Name())
 			internal.PrintErrFatal(internal.DockerCmd(&containerOpts))
 		},
 		Args:               cobra.ArbitraryArgs,
@@ -133,19 +133,19 @@ Docker Command:
   docker exec -it [-u ` + internal.ContainerUserName + `] CONTAINER ` + shellCommand,
 		Args: cobra.NoArgs,
 		Run: func(cmd *cobra.Command, args []string) {
-			config, configPath, err := internal.ProjectConfig()
+			container, err := internal.GetContainer()
 			internal.PrintErrFatal(err)
-			internal.PrintErrFatal(internal.UpContainer(config, configPath))
+			internal.PrintErrFatal(container.Up())
 
 			execArgs := []string{"exec", "-it"}
 			if asRoot {
 				execArgs = append(execArgs, "-u", "root")
-			} else if config.User != "" {
-				execArgs = append(execArgs, "-u", config.User)
-			} else if !config.Permissions.Disable {
+			} else if container.Fields.User != "" {
+				execArgs = append(execArgs, "-u", container.Fields.User)
+			} else if !container.Fields.Permissions.Disable {
 				execArgs = append(execArgs, "-u", internal.ContainerUserName)
 			}
-			execArgs = append(execArgs, internal.ContainerName(config, configPath), shellCommand)
+			execArgs = append(execArgs, container.Name(), shellCommand)
 			internal.PrintErrFatal(internal.DockerCmd(&execArgs))
 		},
 	}
