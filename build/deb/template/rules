@@ -19,7 +19,8 @@ LDFLAGS:=-linkmode external -extldflags "${LDFLAGS}"
 export LDFLAGS
 
 %:
-	dh $@
+	mkdir -p /tmp/gocache
+	GOCACHE=/tmp/gocache dh $@
 
 override_dh_auto_test:
 

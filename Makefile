@@ -32,7 +32,16 @@ test: ## use ahab to test itself
 
 .PHONY: containertest
 containertest: ## must be run inside container set up for test suite
-	$(GO) test -v -ldflags '-s -w $(LDFLAGS)' github.com/MichaelDarr/ahab/internal
+	$(GO) test -ldflags '-s -w $(LDFLAGS)' github.com/MichaelDarr/ahab/internal
+
+.PHONY: coverage
+coverage: ## use ahab to test itself and generate a coverage report
+	cd test; \
+	 $(BIN) cmd make containercoverage
+
+.PHONY: containercoverage
+containercoverage: ## also run inside container, with verbose output and a coverage report
+	$(GO) test -v -coverprofile cp.out -ldflags '-s -w $(LDFLAGS)' github.com/MichaelDarr/ahab/internal
 
 .PHONY: install
 install:
