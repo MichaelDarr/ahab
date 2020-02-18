@@ -34,6 +34,14 @@ func expectStrEq(expected string, actual string, t *testing.T) {
 	}
 }
 
+func expectStrsEq(expected *[]string, actual *[]string, t *testing.T) {
+	for i, expect := range *expected {
+		if expect != (*actual)[i] {
+			t.Errorf("\nExpected: %s\nActual: %s", expected, actual)
+		}
+	}
+}
+
 // generate a mini container object with a config at path /test/[testDir]/ahab.json
 func miniContainer(testDir string) *Container {
 	return &Container{
