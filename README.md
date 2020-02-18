@@ -24,11 +24,18 @@ quickly and effectively develop a containerized project.
 | [`ahab`](https://aur.archlinux.org/packages/ahab/)            | Latest Release
 | [`ahab-git`](https://aur.archlinux.org/packages/ahab-git/)    | Github Master Branch 
 
-### Debian-Based (dpkg)
+### Ubuntu (bionic, disco, eoan, xenial)
 ```sh
-$ wget https://github.com/MichaelDarr/ahab/releases/download/0.1/ahab_0.1-1.deb
-$ sudo dpkg -i ahab_0.1-1.deb
+$ sudo add-apt-repository ppa:michaeldarr/ppa
+$ sudo apt update
+$ sudo apt install ahab
 ```
+
+### Other Debian-Based
+Ahab is available as a source package in [this PPA](https://launchpad.net/~michaeldarr/+archive/ubuntu/ppa).
+The process to add a PPA varies by distro - here are some helpful links:
+* Debian: [Create Package from PPA](https://wiki.debian.org/CreatePackageFromPPA)
+* MX Linux: [Add PPA repository](https://mxlinux.org/wiki/system/add-ppa-repository/)
 
 ### Other
 Try [building from source](#build-from-source)!
