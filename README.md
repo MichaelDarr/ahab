@@ -16,6 +16,7 @@ quickly and effectively develop a containerized project.
 * [Config File Reference](#config-file-reference)
 * [Key Features](#key-features)
 * [Build From Source](#build-from-source)
+* [FAQ](#faq)
 
 ## Installation
 
@@ -154,3 +155,23 @@ $ cd ahab
 $ ahab cmd make
 $ make install
 ```
+
+## FAQ
+
+### How is this different than docker-compose?
+Ahab was created in direct response to issues with docker-compose. Docker-compose is great, but
+it just isn't the right tool for the job for many projects.
+
+One major issue with docker-compose is its lag time behind Docker itself. Docker-compose is a
+python package which interfaces with Docker via docker-py, so the docker-compose team had to
+waiting on docker-py to support this option. At the time of writing, the `--gpus all` option is
+*still* unsupported, 7 months after the feature was released. Ahab supports arbitrary launch
+options, so this class of issue is entirely avoided. Additionally, it's a system-package-managed
+binary instead of a python package often installed with pip, which avoids common python package
+installation errors and inconsistencies.
+
+Second, docker-compose is overkill for most projects. Its features are great if you are building
+a project which needs to run multiple networked containers, but for most projects, most of what
+docker-compose offers is unnecessary. Ahab is dead simple, with smaller config files and a
+gentler learning curve. Its focus on transparency and replaceability make it a great option
+for new projects, whose needs can change quickly.
