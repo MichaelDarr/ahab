@@ -163,8 +163,8 @@ Ahab was created in direct response to issues with docker-compose. Docker-compos
 it just isn't the right tool for the job for many projects.
 
 One major issue with docker-compose is its lag time behind Docker itself. Docker-compose is a
-python package which interfaces with Docker via docker-py, so the docker-compose team had to
-waiting on docker-py to support this option. At the time of writing, the `--gpus all` option is
+python package which interfaces with Docker via docker-py, so the docker-compose team has to
+wait on docker-py for feature support. At the time of writing, the `--gpus all` option is
 *still* unsupported, 7 months after the feature was released. Ahab supports arbitrary launch
 options, so this class of issue is entirely avoided. Additionally, it's a system-package-managed
 binary instead of a python package often installed with pip, which avoids common python package
