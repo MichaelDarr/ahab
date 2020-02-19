@@ -31,12 +31,6 @@ $ sudo apt update
 $ sudo apt install ahab
 ```
 
-### Other Debian-Based
-Ahab is available as a source package in [this PPA](https://launchpad.net/~michaeldarr/+archive/ubuntu/ppa).
-The process to add a PPA varies by distro - here are some helpful links:
-* Debian: [Create Package from PPA](https://wiki.debian.org/CreatePackageFromPPA)
-* MX Linux: [Add PPA repository](https://mxlinux.org/wiki/system/add-ppa-repository/)
-
 ### Other
 Try [building from source](#build-from-source)!
 

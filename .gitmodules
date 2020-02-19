@@ -1,3 +1,0 @@
-[submodule "build/arch"]
-	path = build/arch
-	url = https://aur.archlinux.org/ahab-git.git
