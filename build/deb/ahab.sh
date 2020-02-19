@@ -26,7 +26,7 @@ dh_make -f ../"$TARBALL"
 echo "Additional Steps:
 * Remove template (.ex) files
 * debian/changelog
-  - unstable -> bionic eoan xenial
+  - unstable -> eoan
   - If needed, change revision number: ahab (VERSION-REVISION)
 * See files in template/* for more changes
 

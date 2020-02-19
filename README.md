@@ -11,12 +11,13 @@ In addition the official Docker commands, Ahab supports new ones such as `bash`,
 quickly and effectively develop a containerized project.
 
 ### Table of Contents
-* [Install](#install)
+* [Installation](#installation)
 * [Commands](#commands)
+* [Config File Reference](#config-file-reference)
 * [Key Features](#key-features)
 * [Build From Source](#build-from-source)
 
-## Install
+## Installation
 
 ### Arch Linux
 | AUR Package                                                   | Builds From
