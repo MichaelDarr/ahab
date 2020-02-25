@@ -12,10 +12,10 @@ GOFLAGS := -mod=vendor
 EXTRA_GOFLAGS ?=
 LDFLAGS := $(LDFLAGS) -X "github.com/MichaelDarr/ahab/internal.Version=$(VERSION)"
 
-# for `install` options, macOS's "d" is equivalent to GNU's "D"
+# support macOS's `install` command 
 OS := $(shell uname)
 ifeq ($(OS),Darwin)
-	install_opts = -dm755
+	install_opts = -d -m 0755
 else
 	install_opts = -Dm755
 endif
