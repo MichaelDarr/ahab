@@ -142,7 +142,7 @@ here. This has two major benefits:
 
 ### Universal Image Support
 With Ahab's robust configuration options, you don't need to manage custom images or Dockerfiles for
-your containerized projects! You can use custom users/groups, install new packages, and set custom
+your containerized projects! You can set up users/groups, install new packages, and utilize arbitrary
 container options all without a single Dockerfile or shell script.
 
 ## FAQ
