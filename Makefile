@@ -12,14 +12,6 @@ GOFLAGS := -mod=vendor
 EXTRA_GOFLAGS ?=
 LDFLAGS := $(LDFLAGS) -X "github.com/MichaelDarr/ahab/internal.Version=$(VERSION)"
 
-# support macOS's `install` command 
-OS := $(shell uname)
-ifeq ($(OS),Darwin)
-	install_opts = -d -m 0755
-else
-	install_opts = -Dm755
-endif
-
 .PHONY: default
 default: $(BIN)
 
@@ -54,8 +46,9 @@ containercoverage: ## also run inside container, with verbose output and a cover
 
 .PHONY: install
 install:
-	install $(install_opts) ${BIN} $(DESTDIR)$(PREFIX)/bin/${BIN}
+	install -d $(DESTDIR)$(PREFIX)/bin
+	install -m 0755 $(BIN) $(DESTDIR)$(PREFIX)/bin/$(BIN)
 
 .PHONY: uninstall
 uninstall:
-	rm -f $(DESTDIR)$(PREFIX)/bin/${BIN}
+	rm -f $(DESTDIR)$(PREFIX)/bin/$(BIN)
