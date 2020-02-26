@@ -1,4 +1,4 @@
-name: build and test
+name: test
 on:
   push:
     paths:
@@ -11,22 +11,8 @@ on:
   pull_request:
 
 jobs:
-  build:
-    name: Build
-    runs-on: ubuntu-18.04
-    steps:
-      - name: Install Ahab
-        run: |
-          sudo add-apt-repository ppa:michaeldarr/ppa
-          sudo apt-get update
-          sudo apt-get install ahab
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Build Ahab
-        run: make self
-
   test:
-    name: Test
+    name: test
     runs-on: ubuntu-18.04
     steps:
       - name: Install Ahab
@@ -36,5 +22,5 @@ jobs:
           sudo apt-get install ahab
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Build Ahab
+      - name: Test Ahab
         run: make test
