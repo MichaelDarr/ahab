@@ -1,0 +1,39 @@
+name: build and test
+on:
+  push:
+    paths:
+    - '**.go'
+    - 'go.mod'
+    - 'go.sum'
+    - '**.json'
+    - 'Makefile'
+  pull_request:
+
+jobs:
+  build:
+    name: Build Ahab
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Install Ahab
+        run: |
+          add-apt-repository ppa:michaeldarr/ppa
+          apt-get update
+          apt-get install ahab
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Build Ahab
+        run: make self
+
+  test:
+    name: Test Ahab
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Install Ahab
+        run: |
+          add-apt-repository ppa:michaeldarr/ppa
+          apt-get update
+          apt-get install ahab
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Build Ahab
+        run: make test
