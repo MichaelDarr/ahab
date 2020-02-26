@@ -6,7 +6,7 @@ import (
 	"github.com/MichaelDarr/ahab/internal"
 )
 
-// flags used across the cli
+// flags used across the CLI
 var asRoot bool
 var verbose bool
 
