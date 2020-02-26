@@ -19,7 +19,7 @@ containerized project.
 ### Table of Contents
 * [Installation](#installation)
 * [Commands](#commands)
-* [Configuration File Reference](#configuration-file-reference)
+* [Configuration Reference](#configuration-reference)
 * [Key Features](#key-features)
 * [FAQ](#faq)
 
@@ -53,11 +53,10 @@ $ make install
 ```
 
 ## Commands
-Ahab supports all Docker container commands, automatically targeting the container configured by
-the `ahab.json` file located in the active directory (or in the closest parent, like `git`). For
-more info on these, use the `--help` CLI option or visit the
+Ahab supports all Docker container commands as described [here](#Ahab). For more information, use
+`ahab [command] --help` or visit the
 [Docker CLI reference](https://docs.docker.com/engine/reference/commandline/cli/). Listed below are
-the new commands introduced by Ahab.
+supplemental commands introduced by Ahab.
 
 | Command               | Description
 | :-------------------- | :--
@@ -70,15 +69,15 @@ the new commands introduced by Ahab.
 | `status`              | Print a human-friendly container status report
 | `up`                  | Create and start the container
 
-## Configuration File Reference
-**Note:** All string-type configuration fields support environment variable expansion in the forms of
+## Configuration Reference
+**Note:** All string-type configuration fields support environment variable expansion in the forms
 `${var}` and `$var`.
 
 ### Project Configuration: `ahab.json`
 
 | Field                 | Type          | Default       | Description
 | :-------------------- | :------------ | :------------ | :--
-| `ahab`                | string        | **REQUIRED**  | Minimum Ahab version required to launch this project
+| `ahab`                | string        | **REQUIRED**  | Minimum Ahab version required to launch a project
 | `command`             | string        | `top -b`      | [See Docker Reference](https://docs.docker.com/engine/reference/run/#cmd-default-command-or-options)
 | `entrypoint`          | string        | None          | [See Docker Reference](https://docs.docker.com/engine/reference/run/#entrypoint-default-command-to-execute-at-runtime)
 | `environment`         | [string]      | []            | List of `KEY=VALUE` environment variables to set in the container
