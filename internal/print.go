@@ -15,7 +15,7 @@ func PrintCmd(cmd *exec.Cmd) {
 	}
 }
 
-// PrintDockerHelp parses args for a help flag, printing a help menu and running corresponsing docker help command if requested
+// PrintDockerHelp parses args for a help flag, printing a help menu and running corresponding docker help command if requested
 func PrintDockerHelp(cmdArgs *[]string, dockerCmd string, helpString string) (helpRequested bool, err error) {
 	for _, arg := range *cmdArgs {
 		if arg == "-h" || arg == "--help" {

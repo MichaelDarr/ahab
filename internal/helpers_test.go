@@ -24,7 +24,7 @@ func prohibitContainerStatus(prohibitStatus int, container *Container, t *testin
 	if err != nil {
 		t.Errorf("Error checking status: %s", err)
 	} else if foundStatus == prohibitStatus {
-		t.Errorf("Observed a prohibitted container status: %s", ParseStatus(foundStatus))
+		t.Errorf("Observed a prohibited container status: %s", ParseStatus(foundStatus))
 	}
 }
 
