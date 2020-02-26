@@ -19,9 +19,8 @@ containerized project.
 ### Table of Contents
 * [Installation](#installation)
 * [Commands](#commands)
-* [Config File Reference](#config-file-reference)
+* [Configuration File Reference](#configuration-file-reference)
 * [Key Features](#key-features)
-* [Build From Source](#build-from-source)
 * [FAQ](#faq)
 
 ## Installation
@@ -39,8 +38,19 @@ $ sudo apt update
 $ sudo apt install ahab
 ```
 
-### Other
-Try [building from source](#build-from-source)!
+### Other (From Source)
+
+**Prerequisites:**
+* git
+* go (tested on 1.13.7)
+* make
+
+```sh
+$ git clone git@github.com:MichaelDarr/ahab.git
+$ cd ahab
+$ make  # or, `make self` to build ahab *with* ahab (prerequisites: Docker, Ahab)
+$ make install
+```
 
 ## Commands
 Ahab supports all Docker container commands, automatically targeting the container configured by
@@ -60,23 +70,24 @@ the new commands introduced by Ahab.
 | `status`              | Print a human-friendly container status report
 | `up`                  | Create and start the container
 
-## Config File Reference
+## Configuration File Reference
+**Note:** All string-type configuration fields support environment variable expansion in the forms of
+`${var}` and `$var`.
 
-### Project Configuration
-All project configs are named `ahab.json`
+### Project Configuration: `ahab.json`
 
 | Field                 | Type          | Default       | Description
 | :-------------------- | :------------ | :------------ | :--
 | `ahab`                | string        | **REQUIRED**  | Minimum Ahab version required to launch this project
 | `command`             | string        | `top -b`      | [See Docker Reference](https://docs.docker.com/engine/reference/run/#cmd-default-command-or-options)
 | `entrypoint`          | string        | None          | [See Docker Reference](https://docs.docker.com/engine/reference/run/#entrypoint-default-command-to-execute-at-runtime)
-| `environment`         | [string]      | []            | List of `KEY=VALUE` pairs of environment variables to set in the container
+| `environment`         | [string]      | []            | List of `KEY=VALUE` environment variables to set in the container
 | `hostname`            | string        | None          | Container host name
 | `image`               | string        | **REQUIRED**  | Docker image used by the container
 | `init`                | [string]      | []            | List of commands to be run as root immediately after container creation
 | `name`                | string        | None          | Manually assign a name to the container instead of generating it from the config path
 | `options`             | [string]      | []            | List of options passed during container creation
-| `permissions`         | {[permissions](#permissions)} | {}            | See [Permissions](#permissions) section
+| `permissions`         | {[permissions](#permissions)} | {}            | See [Permissions](#permissions)
 | `restartAfterSetup`   | boolean       | false         | If true, container restarts after permissions are set up and `init` commands are run
 | `shareX11`            | boolean       | false         | If true, container can launch windows onto the host's X11-Compatible Desktop
 | `user`                | string        | `ahab`        | User for commands after initial setup
@@ -91,8 +102,7 @@ All project configs are named `ahab.json`
 | `disable` | boolean   | false     | If true, Ahab does not set up any user permissions or create the `ahab` user
 | `groups`  | [string]  | []        | Groups the `ahab` user belongs to. If a group does not exist in-image, prefix it with `!`
 
-### User Configuration
-All user configs are should be located at `~/.config/ahab/config.json`
+### User Configuration: `~/.config/ahab/config.json`
 
 | Field                 | Type          | Default       | Description
 | :-------------------- | :------------ | :------------ | :--
@@ -136,31 +146,6 @@ here. This has two major benefits:
 With Ahab's robust configuration options, you don't need to manage custom images or Dockerfiles for
 your containerized projects! You can use custom users/groups, install new packages, and mount
 volumes - all without a Dockerfile or helper shell script.
-
-## Build from Source
-
-**Prerequisites:**
-* go (tested on 1.13.7)
-
-```sh
-$ git clone git@github.com:MichaelDarr/ahab.git
-$ cd ahab
-$ make
-$ make install
-```
-
-### Build Ahab *with* Ahab
-
-**Prerequisites:**
-* Docker
-* Ahab
-
-```sh
-$ git clone git@github.com:MichaelDarr/ahab.git
-$ cd ahab
-$ ahab cmd make
-$ make install
-```
 
 ## FAQ
 

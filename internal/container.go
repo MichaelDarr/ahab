@@ -246,7 +246,7 @@ func (container *Container) creationOpts() (opts []string, err error) {
 
 	// hostname
 	if container.Fields.Hostname != "" {
-		opts = append(opts, "-h", container.Fields.Hostname)
+		opts = append(opts, "-h", os.ExpandEnv(container.Fields.Hostname))
 	} else {
 		// hostname = name of parent dir of the container file
 		opts = append(opts, "-h", filepath.Base(filepath.Dir(container.FilePath)))
