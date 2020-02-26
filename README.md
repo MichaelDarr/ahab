@@ -7,13 +7,14 @@ Containerization is awesome, but the upfront costs of project setup and steep le
 make it a pain. Ahab is a CLI tool that jump-starts this process, avoiding frustration without
 obfuscating your workflow.
 
-Ahab searches for a project config file `ahab.json` and uses it to create and interact with
-Docker containers. The Ahab CLI supports all of Docker's container commands without having to
-manually target your container name or ID.
-
-In addition the official Docker commands, Ahab supports new ones such as `bash`, `up`, and
-`status` - we'll talk about these and more later. Ahab provides everything you need to
-quickly and effectively develop a containerized project.
+When invoked at the command line, `ahab` searches the current directory (and its parents,
+recursively) for a file `ahab.json`. Its contents describe the manner in which Ahab will create and
+interact with a project's Docker container. The Ahab CLI supports all Docker container commands
+without having to specify a container name or ID - the container described by `ahab.json` is
+automatically targeted. For example, `docker rm [container_id]` becomes `ahab rm`. Additionally,
+Ahab introduces new commands such as `bash`, `up`, and `status` - a full list can be found
+[here](#commands). Ahab provides everything you need to quickly and effectively develop a
+containerized project.
 
 ### Table of Contents
 * [Installation](#installation)
