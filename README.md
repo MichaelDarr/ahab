@@ -1,7 +1,7 @@
 # Ahab
 #### Configure, launch, and work in Dockerized environments
 
-[![ahab](https://img.shields.io/aur/version/ahab.svg?label=ahab)](https://aur.archlinux.org/packages/ahab/) ![GitHub badge](https://github.com/MichaelDarr/ahab/workflows/build/badge.svg) ![GitHub badge](https://github.com/MichaelDarr/ahab/workflows/test/badge.svg) [![GitHub license](https://img.shields.io/github/license/MichaelDarr/ahab.svg)](https://github.com/MichaelDarr/ahab/blob/master/LICENSE)
+[![ahab](https://img.shields.io/aur/version/ahab.svg?label=ahab)](https://aur.archlinux.org/packages/ahab/) [![GitHub license](https://img.shields.io/github/license/MichaelDarr/ahab.svg)](https://github.com/MichaelDarr/ahab/blob/master/LICENSE) ![GitHub badge](https://github.com/MichaelDarr/ahab/workflows/build/badge.svg) ![GitHub badge](https://github.com/MichaelDarr/ahab/workflows/test/badge.svg) 
 
 Containerization is awesome, but the upfront costs of project setup and steep learning curve can
 make it a pain. Ahab is a CLI tool that jump-starts this process, avoiding frustration without
