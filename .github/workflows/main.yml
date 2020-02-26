@@ -7,6 +7,7 @@ on:
     - 'go.sum'
     - '**.json'
     - 'Makefile'
+    - '.github/workflows/*'
   pull_request:
 
 jobs:
@@ -16,9 +17,9 @@ jobs:
     steps:
       - name: Install Ahab
         run: |
-          add-apt-repository ppa:michaeldarr/ppa
-          apt-get update
-          apt-get install ahab
+          sudo add-apt-repository ppa:michaeldarr/ppa
+          sudo apt-get update
+          sudo apt-get install ahab
       - name: Checkout
         uses: actions/checkout@v2
       - name: Build Ahab
@@ -30,9 +31,9 @@ jobs:
     steps:
       - name: Install Ahab
         run: |
-          add-apt-repository ppa:michaeldarr/ppa
-          apt-get update
-          apt-get install ahab
+          sudo add-apt-repository ppa:michaeldarr/ppa
+          sudo apt-get update
+          sudo apt-get install ahab
       - name: Checkout
         uses: actions/checkout@v2
       - name: Build Ahab
