@@ -1,7 +1,8 @@
 # Ahab
 #### Configure, launch, and work in Dockerized environments
+![GitHub badge](https://github.com/MichaelDarr/ahab/workflows/build/badge.svg) ![GitHub badge](https://github.com/MichaelDarr/ahab/workflows/test/badge.svg)
 
-[![ahab](https://img.shields.io/aur/version/ahab.svg?label=ahab)](https://aur.archlinux.org/packages/ahab/) [![GitHub license](https://img.shields.io/github/license/MichaelDarr/ahab.svg)](https://github.com/MichaelDarr/ahab/blob/master/LICENSE) ![GitHub badge](https://github.com/MichaelDarr/ahab/workflows/build/badge.svg) ![GitHub badge](https://github.com/MichaelDarr/ahab/workflows/test/badge.svg) 
+[![Go Report Card](https://goreportcard.com/badge/github.com/MichaelDarr/ahab)](https://goreportcard.com/badge/github.com/MichaelDarr/ahab) [![Godoc Reference](https://godoc.org/github.com/MichaelDarr/ahab/internal?status.svg)](https://godoc.org/github.com/MichaelDarr/ahab/internal) [![GitHub license](https://img.shields.io/github/license/MichaelDarr/ahab.svg)](https://github.com/MichaelDarr/ahab/blob/master/LICENSE)
 
 Containerization is awesome, but the upfront costs of project setup and steep learning curve can
 make it a pain. Ahab is a CLI tool that jump-starts this process, avoiding frustration without
@@ -26,10 +27,10 @@ containerized project.
 ## Installation
 
 ### Arch Linux
-| AUR Package                                                   | Builds From
-| :------------------------------------------------------------ | :--
-| [`ahab`](https://aur.archlinux.org/packages/ahab/)            | Latest Release
-| [`ahab-git`](https://aur.archlinux.org/packages/ahab-git/)    | Github Master Branch 
+| AUR Package | Builds From
+| :-- | :--
+| [![ahab](https://img.shields.io/aur/version/ahab.svg?label=ahab)](https://aur.archlinux.org/packages/ahab/) | Latest Release
+| [![ahab-git](https://img.shields.io/aur/version/ahab-git.svg?label=ahab-git)](https://aur.archlinux.org/packages/ahab-git/)    | Github Master Branch 
 
 ### Ubuntu (bionic, disco, eoan, xenial)
 ```sh
