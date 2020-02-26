@@ -16,7 +16,7 @@ Ahab introduces new commands such as `bash`, `up`, and `status` - a full list ca
 [here](#commands). Ahab provides everything you need to quickly and effectively develop a
 containerized project.
 
-### Table of Contents
+## Table of Contents
 * [Installation](#installation)
 * [Commands](#commands)
 * [Configuration Reference](#configuration-reference)
@@ -87,9 +87,9 @@ supplemental commands introduced by Ahab.
 | `name`                | string        | None          | Manually assign a name to the container instead of generating it from the config path
 | `options`             | [string]      | []            | List of options passed during container creation
 | `permissions`         | {[permissions](#permissions)} | {}            | See [Permissions](#permissions)
-| `restartAfterSetup`   | boolean       | false         | If true, container restarts after permissions are set up and `init` commands are run
-| `shareX11`            | boolean       | false         | If true, container can launch windows onto the host's X11-Compatible Desktop
-| `user`                | string        | `ahab`        | User for commands after initial setup
+| `restartAfterSetup`   | boolean       | false         | If true, the container restarts after permissions are set up and `init` commands are run
+| `shareX11`            | boolean       | false         | If true, processes within the container can launch windows onto the host's X11-compatible desktop
+| `user`                | string        | `ahab`        | User for container commands after initial setup
 | `volumes`             | [string]      | []            | List of volumes to mount during container creation
 | `workdir`             | string        | None          | [See Docker Reference](https://docs.docker.com/engine/reference/run/#workdir)
 
@@ -99,13 +99,13 @@ supplemental commands introduced by Ahab.
 | :-------- | :-------- | :-------- | :--
 | `cmdSet`  | string    | None      | Commands to use while setting permissions. If using a BusyBox-based image, set to `busybox`
 | `disable` | boolean   | false     | If true, Ahab does not set up any user permissions or create the `ahab` user
-| `groups`  | [string]  | []        | Groups the `ahab` user belongs to. If a group does not exist in-image, prefix it with `!`
+| `groups`  | [string]  | []        | Groups the `ahab` user belongs to. If a group does not yet exist in-image, prefix it with a `!`, e.g. `"groups": ["!docker"]`
 
 ### User Configuration: `~/.config/ahab/config.json`
 
 | Field                 | Type          | Default       | Description
 | :-------------------- | :------------ | :------------ | :--
-| `environment`         | [string]      | []            | List of extra `KEY=VALUE` pairs of environment variables to set in containers
+| `environment`         | [string]      | []            | List of extra `KEY=VALUE` environment variables to set in containers
 | `hideCommands`        | boolean       | false         | If true, Ahab will not print Docker commands before it runs them
 | `options`             | [string]      | []            | List of extra options passed during container creation
 | `volumes`             | [string]      | []            | List of extra of volumes to mount during container creation
@@ -122,16 +122,15 @@ transparent manner so you have complete control over your project.
 Ahab looks for the `ahab.json` file like `git` looks for the `.git` folder. If there is no config
 file in the current directory, Ahab searches its parent directories recursively until `ahab.json`
 is found or the root of the file system is reached. With this system, it's easy to manage multiple
-containers on a single machine, or even in a single project.
-
-Ahab itself has additional nested configuration files to run its test suite(`test/ahab.json`) or
-build distro-specific packages(`build/deb/ahab.json`).
+containers on a single machine, or even in a single project. Internally, Ahab leverages this
+feature to run its test suite (`test/ahab.json`) and build distribution-specific packages
+(`build/deb/ahab.json`).
 
 ### Stateless Operation
 Ahab has no internal state and never writes to any files. Each invocation is a blank slate, so you
-never end up with a bad installation or inexplicable errors. Additionally, since Ahab is a single
-compiled binary instead of an interpreted python package (like docker-compose), you don't have to
-worry about machine-specific interpreter/dependency issues.
+never end up with a bad installation or inexplicable errors. Additionally, since Ahab is an
+independent compiled binary instead of an interpreted python package (like `docker-compose`), you
+don't have to worry about machine-specific interpreter/dependency issues.
 
 ### Transparent Behavior
 Ahab acts like a developer, only using Docker commands interact with containers. The commands run
@@ -143,25 +142,25 @@ here. This has two major benefits:
 
 ### Universal Image Support
 With Ahab's robust configuration options, you don't need to manage custom images or Dockerfiles for
-your containerized projects! You can use custom users/groups, install new packages, and mount
-volumes - all without a Dockerfile or helper shell script.
+your containerized projects! You can use custom users/groups, install new packages, and set custom
+container options all without a single Dockerfile or shell script.
 
 ## FAQ
 
 ### How is this different than docker-compose?
-Ahab was created in direct response to issues with docker-compose. Docker-compose is great, but
-it just isn't the right tool for the job for many projects.
+Ahab was created in response to frustration with docker-compose. One issue with docker-compose is
+its lag time behind Docker itself. Since docker-compose is a python package which interfaces with
+Docker via docker-py, the docker-compose team has to wait on docker-py for feature support. At the
+time of writing, the `--gpus all` option is unsupported by docker-compose 7 months after its
+release in Docker CE. Ahab's arbitrary container options entirely avoid this issue.
 
-One major issue with docker-compose is its lag time behind Docker itself. Docker-compose is a
-python package which interfaces with Docker via docker-py, so the docker-compose team has to
-wait on docker-py for feature support. At the time of writing, the `--gpus all` option is
-*still* unsupported, 7 months after the feature was released. Ahab supports arbitrary launch
-options, so this class of issue is entirely avoided. Additionally, it's a system-package-managed
-binary instead of a python package often installed with pip, which avoids common python package
-installation errors and inconsistencies.
+A second concern over docker-compose is its distribution mechanism as a python package. For teams
+of developers, this can be problematic due to inconsistent python package management and dependency
+tree conflicts. Internal tooling to extend docker-compose further exacerbates these issues. In
+contrast, Ahab is installed as a standalone binary executable.
 
-Second, docker-compose is overkill for most projects. Its features are great if you are building
-a project which needs to run multiple networked containers, but for most projects, most of what
-docker-compose offers is unnecessary. Ahab is dead simple, with smaller config files and a
-gentler learning curve. Its focus on transparency and replaceability make it a great option
-for new projects, whose needs can change quickly.
+Lastly, docker-compose and Ahab serve two very different project archetypes. The ability to run
+multiple interdependent containers is needed only by a minority of projects; for most, only a
+single well-configured environment is required. Here, Ahab thrives with its simpler config files,
+development-ready environments, and gentler learning curves. New, volatile projects especially
+benefit from Ahab's commitment to transparency and replaceability.
