@@ -1,6 +1,11 @@
 # Ahab
+#### Configure, launch, and work in Dockerized environments
+
+[![ahab](https://img.shields.io/aur/version/ahab.svg?label=ahab)](https://aur.archlinux.org/packages/ahab/) [![GitHub license](https://img.shields.io/github/license/MichaelDarr/ahab.svg)](https://github.com/MichaelDarr/ahab/blob/master/LICENSE)
+
 Containerization is awesome, but the upfront costs of project setup and steep learning curve can
-make it a pain. Ahab is a CLI tool that jump-starts this process, avoiding frustration without obfuscating your workflow.
+make it a pain. Ahab is a CLI tool that jump-starts this process, avoiding frustration without
+obfuscating your workflow.
 
 Ahab searches for a project config file `ahab.json` and uses it to create and interact with
 Docker containers. The Ahab CLI supports all of Docker's container commands without having to

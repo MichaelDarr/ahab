@@ -13,8 +13,7 @@ var verbose bool
 // rootCmd is the base command which all others are added to
 var rootCmd = &cobra.Command{
 	Use:     "ahab",
-	Short:   "ahab is a Docker configuration tool",
-	Long:    "Configure, launch, and work in Dockerized environments with ahab",
+	Short:   "Configure, launch, and work in Dockerized environments",
 	Version: internal.Version,
 }
 
