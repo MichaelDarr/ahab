@@ -12,7 +12,7 @@ on:
 
 jobs:
   build:
-    name: Build Ahab
+    name: Build
     runs-on: ubuntu-18.04
     steps:
       - name: Install Ahab
@@ -26,7 +26,7 @@ jobs:
         run: make self
 
   test:
-    name: Test Ahab
+    name: Test
     runs-on: ubuntu-18.04
     steps:
       - name: Install Ahab

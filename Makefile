@@ -17,7 +17,7 @@ default: $(BIN)
 
 .PHONY: self
 self: ## use ahab to build itself
-	$(BIN) cmd make
+	$(BIN) exec make
 
 .PHONY: build
 build: $(BIN)
@@ -29,7 +29,7 @@ $(BIN): ## build
 .PHONY: test
 test: ## use ahab to test itself
 	cd test; \
-	 $(BIN) cmd make containertest
+	 $(BIN) exec make containertest
 
 .PHONY: containertest
 containertest: ## must be run inside container set up for test suite
@@ -38,7 +38,7 @@ containertest: ## must be run inside container set up for test suite
 .PHONY: coverage
 coverage: ## use ahab to test itself and generate a coverage report
 	cd test; \
-	 $(BIN) cmd make containercoverage
+	 $(BIN) exec make containercoverage
 
 .PHONY: containercoverage
 containercoverage: ## also run inside container, with verbose output and a coverage report
