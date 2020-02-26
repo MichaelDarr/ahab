@@ -151,8 +151,8 @@ container options all without a single Dockerfile or shell script.
 Ahab was created in response to frustration with docker-compose. One issue with docker-compose is
 its lag time behind Docker itself. Since docker-compose is a python package which interfaces with
 Docker via docker-py, the docker-compose team has to wait on docker-py for feature support. At the
-time of writing, the `--gpus all` option is unsupported by docker-compose 7 months after its
-release in Docker CE. Ahab's arbitrary container options entirely avoid this issue.
+time of writing, the `--gpus` option is unsupported by docker-compose 7 months after its release in
+Docker CE. Ahab's arbitrary container options entirely avoid this issue.
 
 A second concern over docker-compose is its distribution mechanism as a python package. For teams
 of developers, this can be problematic due to inconsistent python package management and dependency
