@@ -19,7 +19,9 @@ var Version string
 // Configuration contains docker config fields
 type Configuration struct {
 	AhabVersion       string            `json:"ahab"`
+	BuildContext      string            `json:"buildContext"`
 	Command           string            `json:"command"`
+	Dockerfile        string            `json:"dockerfile"`
 	Entrypoint        string            `json:"entrypoint"`
 	Environment       []string          `json:"environment"`
 	Hostname          string            `json:"hostname"`
@@ -107,13 +109,14 @@ func findConfigPath(topDir string) (configPath string, err error) {
 	return
 }
 
-// a comma-separated list of required fields missing from a configuration
-func (config *Configuration) missingFields() (missingVars string) {
+// return a non-nil error if config is invalid
+func (config *Configuration) validateConfig() (err error) {
 	if config.AhabVersion == "" {
-		missingVars = appendToStrList(missingVars, "ahab")
-	}
-	if config.ImageURI == "" {
-		missingVars = appendToStrList(missingVars, "image")
+		err = fmt.Errorf("Missing required version field 'ahab'")
+	} else if config.ImageURI == "" && config.Dockerfile == "" {
+		err = fmt.Errorf("Either 'image' or 'dockerfile' must be present")
+	} else if config.ImageURI != "" && config.Dockerfile != "" {
+		err = fmt.Errorf("'image' and `dockerfile' cannot both be present")
 	}
 	return
 }

@@ -43,8 +43,8 @@ func GetContainer() (*Container, error) {
 		return nil, fmt.Errorf("Failed to parse config file '%s': %s", container.FilePath, err)
 	}
 
-	if missing := container.Fields.missingFields(); missing != "" {
-		return nil, fmt.Errorf("Config file '%s' missing required fields: %s", container.FilePath, missing)
+	if err := container.Fields.validateConfig(); err != nil {
+		return nil, fmt.Errorf("Config file '%s' invalid: %s", container.FilePath, err)
 	}
 	return container, checkConfigVersion(container.Fields.AhabVersion)
 }
@@ -259,7 +259,35 @@ func (container *Container) creationOpts() (opts []string, err error) {
 	}
 
 	// container name and image
-	return append(opts, "--name", container.Name(), os.ExpandEnv(container.Fields.ImageURI)), err
+	imageName, err := container.prepImage()
+	if err != nil {
+		return nil, err
+	}
+	return append(opts, "--name", container.Name(), imageName), err
+}
+
+func (container *Container) prepImage() (imageString string, err error) {
+	if container.Fields.ImageURI != "" {
+		imageString = os.ExpandEnv(container.Fields.ImageURI)
+	} else if container.Fields.Dockerfile != "" {
+		dockerfilePath, dfileErr := prepVolumeString(container.Fields.Dockerfile, container.FilePath)
+		if dfileErr != nil {
+			return "", dfileErr
+		}
+		_, dfileErr = os.Stat(dockerfilePath)
+		if dfileErr != nil {
+			return "", fmt.Errorf("Dockerfile not found: '%s'", dockerfilePath)
+		}
+		imageString = strings.ToLower(container.Name() + "_" + filepath.Base(dockerfilePath))
+		dockerBuildCtx := container.Fields.BuildContext
+		if dockerBuildCtx == "" {
+			dockerBuildCtx = filepath.Dir(container.FilePath)
+		}
+		err = DockerCmd(&[]string{"build", "-t", imageString, "-f", dockerfilePath, dockerBuildCtx})
+	} else {
+		err = fmt.Errorf("Either `image` or `dockerfile` must be present")
+	}
+	return
 }
 
 // run commands to prepare users/permissions in the container

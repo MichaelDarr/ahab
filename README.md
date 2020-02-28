@@ -79,11 +79,13 @@ supplemental commands introduced by Ahab.
 | Field                 | Type          | Default       | Description
 | :-------------------- | :------------ | :------------ | :--
 | `ahab`                | string        | **REQUIRED**  | Minimum Ahab version required to launch a project
+| `buildContext`        | string        | `ahab.json`'s directory         | Docker build context (if using `dockerfile` instead of `image`)
 | `command`             | string        | `top -b`      | [See Docker Reference](https://docs.docker.com/engine/reference/run/#cmd-default-command-or-options)
+| `dockerfile`          | string        | None          | Dockerfile used to build container image (required if `image` not present)
 | `entrypoint`          | string        | None          | [See Docker Reference](https://docs.docker.com/engine/reference/run/#entrypoint-default-command-to-execute-at-runtime)
 | `environment`         | [string]      | []            | List of `KEY=VALUE` environment variables to set in the container
 | `hostname`            | string        | None          | Container host name
-| `image`               | string        | **REQUIRED**  | Docker image used by the container
+| `image`               | string        | None          | Docker image used by the container  (required if `dockerfile` not present)
 | `init`                | [string]      | []            | List of commands to be run as root immediately after container creation
 | `name`                | string        | None          | Manually assign a name to the container instead of generating it from the config path
 | `options`             | [string]      | []            | List of options passed during container creation
