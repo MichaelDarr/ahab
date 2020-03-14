@@ -29,7 +29,7 @@ type Configuration struct {
 	Options           []string          `json:"options"`
 	Permissions       PermConfiguration `json:"permissions"`
 	RestartAfterSetup bool              `json:"restartAfterSetup"`
-	ShareX11          bool              `json:"shareX11"`
+	ShareDisplay      bool              `json:"shareDisplay"`
 	User              string            `json:"user"`
 	Volumes           []string          `json:"volumes"`
 	Workdir           string            `json:"workdir"`

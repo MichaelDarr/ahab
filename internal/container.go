@@ -253,9 +253,24 @@ func (container *Container) creationOpts() (opts []string, err error) {
 	}
 
 	// xhost sharing
-	if container.Fields.ShareX11 {
-		err = DockerXHostAuth()
-		opts = append(opts, "-v", "/tmp/.X11-unix:/tmp/.X11-unix", "-e", "DISPLAY="+os.Getenv("DISPLAY"))
+	if container.Fields.ShareDisplay {
+		switch os.Getenv("XDG_SESSION_TYPE") {
+		case "x11":
+			err = DockerXHostAuth()
+			if err != nil {
+				return nil, err
+			}
+			opts = append(opts,
+				"-v", "/tmp/.X11-unix:/tmp/.X11-unix",
+				"-e", "DISPLAY="+os.Getenv("DISPLAY"))
+		case "wayland":
+			opts = append(opts,
+				"-v", os.ExpandEnv("$XDG_RUNTIME_DIR/$WAYLAND_DISPLAY:/run/host-wayland"),
+				"-e", "XDG_RUNTIME_DIR=/run", "-e", "WAYLAND_DISPLAY=host-wayland",
+				"-e", "CLUTTER_BACKEND=wayland", "-e", "GDK_BACKEND=wayland",
+				"-e", "QT_QPA_PLATFORM=wayland", "-e", "DL_VIDEODRIVER=wayland",
+				"-e", "ELM_DISPLAY=wl", "-e", "ELM_ACCEL=opengl", "-e", "ECORE_EVAS_ENGINE=wayland_egl")
+		}
 	}
 
 	// container name and image
