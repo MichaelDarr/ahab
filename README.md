@@ -91,7 +91,7 @@ supplemental commands introduced by Ahab.
 | `options`             | [string]      | []            | List of options passed during container creation
 | `permissions`         | {[permissions](#permissions)} | {}            | See [Permissions](#permissions)
 | `restartAfterSetup`   | boolean       | false         | If true, the container restarts after permissions are set up and `init` commands are run
-| `shareX11`            | boolean       | false         | If true, processes within the container can launch windows onto the host's X11-compatible desktop
+| `shareDisplay`        | boolean       | false         | If true, processes within the container can launch windows onto the host's display (supports wayland and X11)
 | `user`                | string        | `ahab`        | User for container commands after initial setup
 | `volumes`             | [string]      | []            | List of volumes to mount during container creation
 | `workdir`             | string        | None          | [See Docker Reference](https://docs.docker.com/engine/reference/run/#workdir)

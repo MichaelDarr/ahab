@@ -254,7 +254,17 @@ func (container *Container) creationOpts() (opts []string, err error) {
 
 	// xhost sharing
 	if container.Fields.ShareDisplay {
-		switch os.Getenv("XDG_SESSION_TYPE") {
+		// determine the display server (x11/wayland)
+		// The env var XDG_SESSION_TYPE should tell us this, but some wayland compositors don't set
+		// it on launch and it remains "tty". So, if it's "tty", we check if WAYLAND_DISPLAY is set
+		// to detect wayland.
+		sessionType := os.Getenv("XDG_SESSION_TYPE")
+		_, waylandPresent := os.LookupEnv("WAYLAND_DISPLAY")
+		if sessionType == "tty" && waylandPresent {
+			sessionType = "wayland"
+		}
+
+		switch sessionType {
 		case "x11":
 			err = DockerXHostAuth()
 			if err != nil {
