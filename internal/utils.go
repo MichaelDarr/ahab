@@ -8,6 +8,19 @@ import (
 	"strings"
 )
 
+// DisplaySessionType returns the host's session type (x11, wayland, etc.)
+func DisplaySessionType() (sessionType string) {
+	// The env var XDG_SESSION_TYPE should tell us this, but some wayland compositors (sway) don't
+	// set it on launch and it remains "tty". So, if it's "tty", we check if WAYLAND_DISPLAY is set
+	// to detect wayland.
+	sessionType = os.Getenv("XDG_SESSION_TYPE")
+	_, waylandPresent := os.LookupEnv("WAYLAND_DISPLAY")
+	if sessionType == "tty" && waylandPresent {
+		sessionType = "wayland"
+	}
+	return
+}
+
 // ParseStatus returns the readable string of the passed container status
 // 0 - not found
 // 1 - created
@@ -108,4 +121,19 @@ func versionOrdinal(version string) (string, error) {
 		vo[j]++
 	}
 	return string(vo), nil
+}
+
+func waylandDisplayOptions() []string {
+	return []string{
+		"-v", os.ExpandEnv("$XDG_RUNTIME_DIR/$WAYLAND_DISPLAY:/run/host-wayland"),
+		"-e", "XDG_RUNTIME_DIR=/run", "-e", "WAYLAND_DISPLAY=host-wayland",
+		"-e", "CLUTTER_BACKEND=wayland", "-e", "GDK_BACKEND=wayland",
+		"-e", "QT_QPA_PLATFORM=wayland", "-e", "DL_VIDEODRIVER=wayland",
+		"-e", "ELM_DISPLAY=wl", "-e", "ELM_ACCEL=opengl", "-e", "ECORE_EVAS_ENGINE=wayland_egl"}
+}
+
+func xDisplayOptions() []string {
+	return []string{
+		"-v", "/tmp/.X11-unix:/tmp/.X11-unix",
+		"-e", "DISPLAY=" + os.Getenv("DISPLAY")}
 }

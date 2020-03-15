@@ -254,32 +254,14 @@ func (container *Container) creationOpts() (opts []string, err error) {
 
 	// xhost sharing
 	if container.Fields.ShareDisplay {
-		// determine the display server (x11/wayland)
-		// The env var XDG_SESSION_TYPE should tell us this, but some wayland compositors don't set
-		// it on launch and it remains "tty". So, if it's "tty", we check if WAYLAND_DISPLAY is set
-		// to detect wayland.
-		sessionType := os.Getenv("XDG_SESSION_TYPE")
-		_, waylandPresent := os.LookupEnv("WAYLAND_DISPLAY")
-		if sessionType == "tty" && waylandPresent {
-			sessionType = "wayland"
-		}
-
-		switch sessionType {
+		switch DisplaySessionType() {
 		case "x11":
-			err = DockerXHostAuth()
-			if err != nil {
+			if err := DockerXHostAuth(); err != nil {
 				return nil, err
 			}
-			opts = append(opts,
-				"-v", "/tmp/.X11-unix:/tmp/.X11-unix",
-				"-e", "DISPLAY="+os.Getenv("DISPLAY"))
+			opts = append(opts, xDisplayOptions()...)
 		case "wayland":
-			opts = append(opts,
-				"-v", os.ExpandEnv("$XDG_RUNTIME_DIR/$WAYLAND_DISPLAY:/run/host-wayland"),
-				"-e", "XDG_RUNTIME_DIR=/run", "-e", "WAYLAND_DISPLAY=host-wayland",
-				"-e", "CLUTTER_BACKEND=wayland", "-e", "GDK_BACKEND=wayland",
-				"-e", "QT_QPA_PLATFORM=wayland", "-e", "DL_VIDEODRIVER=wayland",
-				"-e", "ELM_DISPLAY=wl", "-e", "ELM_ACCEL=opengl", "-e", "ECORE_EVAS_ENGINE=wayland_egl")
+			opts = append(opts, waylandDisplayOptions()...)
 		}
 	}
 
