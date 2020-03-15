@@ -12,7 +12,7 @@ Package: ahab
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Suggests: docker
-Description: Dockerize your project, git style
+Description: Configure, launch, and work in Dockerized environments
  Containerization is awesome, but the upfront costs of project setup and steep
  learning curve can make it a pain. Ahab is a CLI tool that jump-starts this
  process, avoiding frustration without obfuscating your workflow.

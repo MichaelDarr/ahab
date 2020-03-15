@@ -12,20 +12,12 @@ GOFLAGS := -mod=vendor
 EXTRA_GOFLAGS ?=
 LDFLAGS := $(LDFLAGS) -X "github.com/MichaelDarr/ahab/internal.Version=$(VERSION)"
 
-# for `install` options, macOS's "d" is equivalent to GNU's "D"
-OS := $(shell uname)
-ifeq ($(OS),Darwin)
-	install_opts = -dm755
-else
-	install_opts = -Dm755
-endif
-
 .PHONY: default
 default: $(BIN)
 
 .PHONY: self
 self: ## use ahab to build itself
-	$(BIN) cmd make
+	$(BIN) exec make
 
 .PHONY: build
 build: $(BIN)
@@ -37,7 +29,7 @@ $(BIN): ## build
 .PHONY: test
 test: ## use ahab to test itself
 	cd test; \
-	 $(BIN) cmd make containertest
+	 $(BIN) exec make containertest
 
 .PHONY: containertest
 containertest: ## must be run inside container set up for test suite
@@ -46,7 +38,7 @@ containertest: ## must be run inside container set up for test suite
 .PHONY: coverage
 coverage: ## use ahab to test itself and generate a coverage report
 	cd test; \
-	 $(BIN) cmd make containercoverage
+	 $(BIN) exec make containercoverage
 
 .PHONY: containercoverage
 containercoverage: ## also run inside container, with verbose output and a coverage report
@@ -54,8 +46,9 @@ containercoverage: ## also run inside container, with verbose output and a cover
 
 .PHONY: install
 install:
-	install $(install_opts) ${BIN} $(DESTDIR)$(PREFIX)/bin/${BIN}
+	install -d $(DESTDIR)$(PREFIX)/bin
+	install -m 0755 $(BIN) $(DESTDIR)$(PREFIX)/bin/$(BIN)
 
 .PHONY: uninstall
 uninstall:
-	rm -f $(DESTDIR)$(PREFIX)/bin/${BIN}
+	rm -f $(DESTDIR)$(PREFIX)/bin/$(BIN)

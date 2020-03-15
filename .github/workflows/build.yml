@@ -1,0 +1,26 @@
+name: build
+on:
+  push:
+    paths:
+    - '**.go'
+    - 'go.mod'
+    - 'go.sum'
+    - '**.json'
+    - 'Makefile'
+    - '.github/workflows/*'
+  pull_request:
+
+jobs:
+  build:
+    name: build
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Install Ahab
+        run: |
+          sudo add-apt-repository ppa:michaeldarr/ppa
+          sudo apt-get update
+          sudo apt-get install ahab
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Build Ahab
+        run: make self
