@@ -123,18 +123,37 @@ func versionOrdinal(version string) (string, error) {
 	return string(vo), nil
 }
 
-func waylandDisplayOptions() []string {
-	return []string{
-		"-v", os.ExpandEnv("$XDG_RUNTIME_DIR/$WAYLAND_DISPLAY:/tmp/host-wayland"),
-		"-e", "DISPLAY=" + os.Getenv("DISPLAY"),
-		"-e", "XDG_RUNTIME_DIR=/tmp", "-e", "WAYLAND_DISPLAY=host-wayland",
-		"-e", "CLUTTER_BACKEND=wayland", "-e", "GDK_BACKEND=wayland",
-		"-e", "QT_QPA_PLATFORM=wayland", "-e", "DL_VIDEODRIVER=wayland",
-		"-e", "ELM_DISPLAY=wl", "-e", "ELM_ACCEL=opengl", "-e", "ECORE_EVAS_ENGINE=wayland_egl"}
-}
+// docker options to share wayland/x11
+func displayOptions() (options []string) {
+	// if display env var is set, set in container
+	if display, displayExists := os.LookupEnv("DISPLAY"); displayExists {
+		options = []string{"-e", "DISPLAY=" + display}
+	}
 
-func xDisplayOptions() []string {
-	return []string{
-		"-v", "/tmp/.X11-unix:/tmp/.X11-unix",
-		"-e", "DISPLAY=" + os.Getenv("DISPLAY")}
+	// if the x11 socket is present, mount it
+	_, err := os.Stat("/tmp/.X11-unix")
+	if err == nil {
+		options = append(options, []string{"-v", "/tmp/.X11-unix:/tmp/.X11-unix"}...)
+	}
+
+	// if the wayland socket is present, mount it & set proper env vars
+	xdgRuntimeDir, xdgRuntimeDirExists := os.LookupEnv("XDG_RUNTIME_DIR")
+	waylandDisplay, waylandDisplayExists := os.LookupEnv("WAYLAND_DISPLAY")
+	if xdgRuntimeDirExists && waylandDisplayExists {
+		waylandSocketPath := filepath.Join(xdgRuntimeDir, waylandDisplay)
+		if _, err = os.Stat(waylandSocketPath); err == nil {
+			options = append(options, []string{
+				"-v", waylandSocketPath + ":/tmp/host-wayland",
+				"-e", "XDG_RUNTIME_DIR=/tmp", "-e", "WAYLAND_DISPLAY=host-wayland"}...)
+		}
+	}
+
+	// if a wayland session is detected, set gui toolkit-specific env vars
+	if DisplaySessionType() == "wayland" {
+		options = append(options, []string{
+			"-e", "CLUTTER_BACKEND=wayland", "-e", "GDK_BACKEND=wayland",
+			"-e", "QT_QPA_PLATFORM=wayland", "-e", "DL_VIDEODRIVER=wayland",
+			"-e", "ELM_DISPLAY=wl", "-e", "ELM_ACCEL=opengl", "-e", "ECORE_EVAS_ENGINE=wayland_egl"}...)
+	}
+	return
 }

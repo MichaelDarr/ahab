@@ -252,16 +252,15 @@ func (container *Container) creationOpts() (opts []string, err error) {
 		opts = append(opts, "-h", filepath.Base(filepath.Dir(container.FilePath)))
 	}
 
-	// xhost sharing
+	// display sharing
 	if container.Fields.ShareDisplay {
-		switch DisplaySessionType() {
-		case "x11":
+		// get and append options
+		opts = append(opts, displayOptions()...)
+		// for x11 sessions, run xhost command to set Docker xserver permissions
+		if DisplaySessionType() == "x11" {
 			if err := DockerXHostAuth(); err != nil {
 				return nil, err
 			}
-			opts = append(opts, xDisplayOptions()...)
-		case "wayland":
-			opts = append(opts, waylandDisplayOptions()...)
 		}
 	}
 
