@@ -316,8 +316,10 @@ func (container *Container) prep() error {
 	userAddCmd := rootExec(container)
 	switch container.Fields.Permissions.CmdSet {
 	case "", "default":
-		userAddCmd = append(userAddCmd, []string{"useradd", "-o", "-m", "-d", homeDir, "-G"}...)
-		userAddCmd = append(userAddCmd, strings.Join(groups, ","))
+		userAddCmd = append(userAddCmd, []string{"useradd", "-o", "-m", "-d", homeDir}...)
+		if len(groups) != 0 {
+			userAddCmd = append(userAddCmd, []string{"-G", strings.Join(groups, ",")}...)
+		}
 		for _, group := range newGroups {
 			extraCmds = append(extraCmds, rootExec(container, "groupadd", group))
 			extraCmds = append(extraCmds, rootExec(container, "usermod", "-G", group, ContainerUserName))

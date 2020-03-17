@@ -126,6 +126,7 @@ func versionOrdinal(version string) (string, error) {
 func waylandDisplayOptions() []string {
 	return []string{
 		"-v", os.ExpandEnv("$XDG_RUNTIME_DIR/$WAYLAND_DISPLAY:/tmp/host-wayland"),
+		"-e", "DISPLAY=" + os.Getenv("DISPLAY"),
 		"-e", "XDG_RUNTIME_DIR=/tmp", "-e", "WAYLAND_DISPLAY=host-wayland",
 		"-e", "CLUTTER_BACKEND=wayland", "-e", "GDK_BACKEND=wayland",
 		"-e", "QT_QPA_PLATFORM=wayland", "-e", "DL_VIDEODRIVER=wayland",
