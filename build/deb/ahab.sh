@@ -30,11 +30,8 @@ echo "Additional Steps:
   - If needed, change revision number: ahab (VERSION-REVISION)
 * See files in template/* for more changes
 
-Build Package:
+Build, sign, and upload package:
+$ cd ahab-VERSION
 $ dpkg-buildpackage -S
-
-Sign Package:
 $ debsign -k [KEY ID] [PACKAGE].changes
-
-Upload Package:
 $ dput ppa:michaeldarr/ppa [PACKAGE].changes"
