@@ -136,7 +136,7 @@ independent compiled binary instead of an interpreted python package (like `dock
 don't have to worry about machine-specific interpreter/dependency issues.
 
 ### Transparent Behavior
-Ahab acts like a developer, only using Docker commands interact with containers. The commands run
+Ahab acts like a developer, only using Docker commands to interact with containers. The commands run
 by Ahab are printed directly in the shell, so you know exactly what it's doing - there's no "magic"
 here. This has two major benefits:
 
