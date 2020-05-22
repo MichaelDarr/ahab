@@ -4,9 +4,9 @@ Source: <https://github.com/MichaelDarr/ahab>
 
 Files: *
 Copyright: 2020 Michael Darr <michael.e.darr@gmail.com>
-License: GPL-3
+License: Apache-2.0
 
-License: GPL-3
- On Debian systems, the full text of the GNU General Public
- License version 3 can be found in the file
- '/usr/share/common-licenses/GPL-3'
+License: Apache-2.0
+ On Debian systems, the full text of the Apache
+ License version 2 can be found in the file
+ '/usr/share/common-licenses/Apache-2.0'
