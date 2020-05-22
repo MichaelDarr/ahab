@@ -4,6 +4,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/MichaelDarr/ahab/internal"
+	ahab "github.com/MichaelDarr/ahab/pkg"
 )
 
 var createCmd = &cobra.Command{
@@ -15,10 +16,10 @@ Docker Command:
   docker create -t [options from ahab.json]`,
 	Run: func(cmd *cobra.Command, args []string) {
 		container, err := internal.GetContainer()
-		internal.PrintErrFatal(err)
+		ahab.PrintErrFatal(err)
 
 		err = container.Create(false)
-		internal.PrintErrFatal(err)
+		ahab.PrintErrFatal(err)
 	},
 }
 

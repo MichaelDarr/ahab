@@ -4,6 +4,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/MichaelDarr/ahab/internal"
+	ahab "github.com/MichaelDarr/ahab/pkg"
 )
 
 // volumes is used as a flag by the prune command
@@ -21,7 +22,7 @@ Docker Command:
 		if volumes {
 			pruneArgs = append(pruneArgs, "--volumes")
 		}
-		internal.PrintErrFatal(internal.DockerCmd(&pruneArgs))
+		ahab.PrintErrFatal(internal.DockerCmd(&pruneArgs))
 	},
 }
 

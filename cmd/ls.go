@@ -4,6 +4,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/MichaelDarr/ahab/internal"
+	ahab "github.com/MichaelDarr/ahab/pkg"
 )
 
 var lsCmd = &cobra.Command{
@@ -16,9 +17,9 @@ Docker Commands:
   docker images [FORMATTING FLAGS]
   docker volume ls`,
 	Run: func(cmd *cobra.Command, args []string) {
-		internal.PrintErrFatal(internal.ListContainers(verbose))
-		internal.PrintErrFatal(internal.ListImages(verbose))
-		internal.PrintErrFatal(internal.ListVolumes())
+		ahab.PrintErrFatal(internal.ListContainers(verbose))
+		ahab.PrintErrFatal(internal.ListImages(verbose))
+		ahab.PrintErrFatal(internal.ListVolumes())
 	},
 }
 
@@ -30,7 +31,7 @@ var lscCmd = &cobra.Command{
 Docker Command:
   docker ps -a [FORMATTING FLAGS]`,
 	Run: func(cmd *cobra.Command, args []string) {
-		internal.PrintErrFatal(internal.ListContainers(verbose))
+		ahab.PrintErrFatal(internal.ListContainers(verbose))
 	},
 }
 
@@ -42,7 +43,7 @@ var lsiCmd = &cobra.Command{
 Docker Command:
   docker images [FORMATTING FLAGS]`,
 	Run: func(cmd *cobra.Command, args []string) {
-		internal.PrintErrFatal(internal.ListImages(verbose))
+		ahab.PrintErrFatal(internal.ListImages(verbose))
 	},
 }
 
@@ -54,7 +55,7 @@ var lsvCmd = &cobra.Command{
 Docker Command:
   docker volume ls`,
 	Run: func(cmd *cobra.Command, args []string) {
-		internal.PrintErrFatal(internal.ListVolumes())
+		ahab.PrintErrFatal(internal.ListVolumes())
 	},
 }
 

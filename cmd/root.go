@@ -4,6 +4,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/MichaelDarr/ahab/internal"
+	ahab "github.com/MichaelDarr/ahab/pkg"
 )
 
 // flags used across the CLI
@@ -83,8 +84,8 @@ Docker Command:
   docker ` + command + ` CONTAINER`,
 		Run: func(cmd *cobra.Command, args []string) {
 			container, err := internal.GetContainer()
-			internal.PrintErrFatal(err)
-			internal.PrintErrFatal(container.Cmd(command))
+			ahab.PrintErrFatal(err)
+			ahab.PrintErrFatal(container.Cmd(command))
 		},
 	}
 }
@@ -103,16 +104,16 @@ Docker Command:
 Usage:
   ahab `+command+` [-h/--help] [OPTIONS]
 `)
-			internal.PrintErrFatal(err)
+			ahab.PrintErrFatal(err)
 			if helpRequested {
 				return
 			}
 			container, err := internal.GetContainer()
-			internal.PrintErrFatal(err)
+			ahab.PrintErrFatal(err)
 
 			containerOpts := append([]string{command}, args...)
 			containerOpts = append(containerOpts, container.Name())
-			internal.PrintErrFatal(internal.DockerCmd(&containerOpts))
+			ahab.PrintErrFatal(internal.DockerCmd(&containerOpts))
 		},
 		Args:               cobra.ArbitraryArgs,
 		DisableFlagParsing: true,
@@ -133,8 +134,8 @@ Docker Command:
 		Args: cobra.NoArgs,
 		Run: func(cmd *cobra.Command, args []string) {
 			container, err := internal.GetContainer()
-			internal.PrintErrFatal(err)
-			internal.PrintErrFatal(container.Up())
+			ahab.PrintErrFatal(err)
+			ahab.PrintErrFatal(container.Up())
 
 			execArgs := []string{"exec", "-it"}
 			if asRoot {
@@ -145,7 +146,7 @@ Docker Command:
 				execArgs = append(execArgs, "-u", internal.ContainerUserName)
 			}
 			execArgs = append(execArgs, container.Name(), shellCommand)
-			internal.PrintErrFatal(internal.DockerCmd(&execArgs))
+			ahab.PrintErrFatal(internal.DockerCmd(&execArgs))
 		},
 	}
 

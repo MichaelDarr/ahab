@@ -4,6 +4,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/MichaelDarr/ahab/internal"
+	ahab "github.com/MichaelDarr/ahab/pkg"
 )
 
 var downCmd = &cobra.Command{
@@ -11,8 +12,8 @@ var downCmd = &cobra.Command{
 	Short: "Stop and remove container",
 	Run: func(cmd *cobra.Command, args []string) {
 		container, err := internal.GetContainer()
-		internal.PrintErrFatal(err)
-		internal.PrintErrFatal(container.Down())
+		ahab.PrintErrFatal(err)
+		ahab.PrintErrFatal(container.Down())
 	},
 }
 

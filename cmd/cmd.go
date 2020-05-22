@@ -4,6 +4,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/MichaelDarr/ahab/internal"
+	ahab "github.com/MichaelDarr/ahab/pkg"
 )
 
 var cmdCmd = &cobra.Command{
@@ -18,14 +19,14 @@ Docker Command:
 Usage:
   ahab cmd [-h/--help] COMMAND [OPTIONS]
 `)
-		internal.PrintErrFatal(err)
+		ahab.PrintErrFatal(err)
 		if helpRequested {
 			return
 		}
 
 		container, err := internal.GetContainer()
-		internal.PrintErrFatal(err)
-		internal.PrintErrFatal(container.Up())
+		ahab.PrintErrFatal(err)
+		ahab.PrintErrFatal(container.Up())
 
 		containerOpts := []string{"exec", "-it"}
 		if container.Fields.User != "" {
@@ -35,7 +36,7 @@ Usage:
 		}
 		containerOpts = append(containerOpts, container.Name())
 		containerOpts = append(containerOpts, args...)
-		internal.PrintErrFatal(internal.DockerCmd(&containerOpts))
+		ahab.PrintErrFatal(internal.DockerCmd(&containerOpts))
 	},
 	Args:               cobra.ArbitraryArgs,
 	DisableFlagParsing: true,

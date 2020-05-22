@@ -9,23 +9,7 @@ import (
 
 // PrintCmd prints a single command to the console
 func PrintCmd(cmd *exec.Cmd) {
-	userConfig, err := UserConfig()
-	if err == nil && !userConfig.HideCommands {
-		StylePrint("cyan", "$ "+strings.Join(cmd.Args, " "))
-	}
-}
-
-// PrintDockerHelp parses args for a help flag, printing a help menu and running corresponding docker help command if requested
-func PrintDockerHelp(cmdArgs *[]string, dockerCmd string, helpString string) (helpRequested bool, err error) {
-	for _, arg := range *cmdArgs {
-		if arg == "-h" || arg == "--help" {
-			helpRequested = true
-			fmt.Println(helpString)
-			helpArgs := []string{dockerCmd, "--help"}
-			err = DockerCmd(&helpArgs)
-		}
-	}
-	return
+	StylePrint("cyan", "$ "+strings.Join(cmd.Args, " "))
 }
 
 // PrintErr prints an error to the console (if non-nil)

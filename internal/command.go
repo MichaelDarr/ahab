@@ -1,8 +1,11 @@
 package internal
 
 import (
+	"fmt"
 	"os"
 	"os/exec"
+
+	ahab "github.com/MichaelDarr/ahab/pkg"
 )
 
 // Docker generates a Docker command
@@ -15,7 +18,10 @@ func Docker(opts *[]string) (cmd *exec.Cmd) {
 func DockerCmd(opts *[]string) error {
 	cmd := Docker(opts)
 	cmd.Stdin, cmd.Stdout, cmd.Stderr = os.Stdin, os.Stdout, os.Stderr
-	PrintCmd(cmd)
+	userConfig, err := UserConfig()
+	if err == nil && !userConfig.HideCommands {
+		ahab.PrintCmd(cmd)
+	}
 	return cmd.Run()
 }
 
@@ -54,6 +60,19 @@ func ListImages(verbose bool) error {
 func ListVolumes() error {
 	execArgs := []string{"volume", "ls"}
 	return DockerCmd(&execArgs)
+}
+
+// PrintDockerHelp parses args for a help flag, printing a help menu and running corresponding docker help command if requested
+func PrintDockerHelp(cmdArgs *[]string, dockerCmd string, helpString string) (helpRequested bool, err error) {
+	for _, arg := range *cmdArgs {
+		if arg == "-h" || arg == "--help" {
+			helpRequested = true
+			fmt.Println(helpString)
+			helpArgs := []string{dockerCmd, "--help"}
+			err = DockerCmd(&helpArgs)
+		}
+	}
+	return
 }
 
 // rootExec transforms a command into a DockerCmd-ready root-executed command

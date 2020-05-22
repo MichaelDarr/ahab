@@ -6,6 +6,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/MichaelDarr/ahab/internal"
+	ahab "github.com/MichaelDarr/ahab/pkg"
 )
 
 var statusCmd = &cobra.Command{
@@ -13,47 +14,47 @@ var statusCmd = &cobra.Command{
 	Short: "Print container status",
 	Run: func(cmd *cobra.Command, args []string) {
 		container, err := internal.GetContainer()
-		internal.PrintErrFatal(err)
+		ahab.PrintErrFatal(err)
 
 		fmt.Println("Container:")
-		internal.PrintIndentedPair("Name", container.Name())
+		ahab.PrintIndentedPair("Name", container.Name())
 
 		statusCode, err := container.Status()
-		internal.PrintErrFatal(err)
+		ahab.PrintErrFatal(err)
 		switch statusCode {
 		case 0:
-			internal.PrintIndentedPair("Status", "Not Created")
+			ahab.PrintIndentedPair("Status", "Not Created")
 		case 1:
-			internal.PrintIndentedPair("Status", "Created")
+			ahab.PrintIndentedPair("Status", "Created")
 		case 2:
-			internal.PrintIndentedPair("Status", "Restarting")
+			ahab.PrintIndentedPair("Status", "Restarting")
 		case 3:
-			internal.PrintIndentedPair("Status", "Running")
+			ahab.PrintIndentedPair("Status", "Running")
 		case 4:
-			internal.PrintIndentedPair("Status", "Removing")
+			ahab.PrintIndentedPair("Status", "Removing")
 		case 5:
-			internal.PrintIndentedPair("Status", "Paused")
+			ahab.PrintIndentedPair("Status", "Paused")
 		case 6:
-			internal.PrintIndentedPair("Status", "Exited")
+			ahab.PrintIndentedPair("Status", "Exited")
 		case 7:
-			internal.PrintIndentedPair("Status", "Dead")
+			ahab.PrintIndentedPair("Status", "Dead")
 		default:
-			internal.PrintIndentedPair("Status", "Unknown")
+			ahab.PrintIndentedPair("Status", "Unknown")
 		}
 
 		containerImage, err := container.Prop("Config.Image")
-		internal.PrintErrFatal(err)
+		ahab.PrintErrFatal(err)
 		if containerImage != "" {
-			internal.PrintIndentedPair("Image", containerImage)
+			ahab.PrintIndentedPair("Image", containerImage)
 		}
 
 		containerID, err := container.Prop("Id")
-		internal.PrintErrFatal(err)
+		ahab.PrintErrFatal(err)
 		if containerID != "" {
-			internal.PrintIndentedPair("ID", containerID)
+			ahab.PrintIndentedPair("ID", containerID)
 		}
 
-		internal.PrintIndentedPair("Config", container.FilePath)
+		ahab.PrintIndentedPair("Config", container.FilePath)
 	},
 }
 
