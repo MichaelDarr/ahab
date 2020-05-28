@@ -32,7 +32,7 @@ containerized project.
 | [![ahab](https://img.shields.io/aur/version/ahab.svg?label=ahab)](https://aur.archlinux.org/packages/ahab/) | Latest Release
 | [![ahab-git](https://img.shields.io/aur/version/ahab-git.svg?label=ahab-git)](https://aur.archlinux.org/packages/ahab-git/)    | Github Master Branch 
 
-### Ubuntu (bionic, disco, eoan, focal, xenial)
+### Ubuntu (bionic, eoan, focal, groovy, xenial)
 ```sh
 $ sudo add-apt-repository ppa:michaeldarr/ppa
 $ sudo apt update
